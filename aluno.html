@@ -1,0 +1,1952 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfólio de Competências — Mariana Oliveira</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --surface: #111820;
+        --surface2: #1a2332;
+        --surface3: #1e2a3a;
+        --border: #1f2e42;
+        --border2: #2a3f5a;
+        --text: #e8edf5;
+        --text2: #7a8fa8;
+        --text3: #3d5470;
+        --accent: #00c8a0;
+        --accent2: #0092ff;
+        --accent3: #ff6b6b;
+        --accent4: #f5a623;
+        --accent5: #b06bff;
+        --radius: 12px;
+        --radius-sm: 7px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Syne', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.4;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 32px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .avatar-section {
+        text-align: center;
+        padding: 4px 0;
+      }
+      .avatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a3a5c, #0d2035);
+        border: 2px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--accent);
+        margin: 0 auto 10px;
+        letter-spacing: -0.02em;
+      }
+      .student-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .student-meta {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+        line-height: 1.8;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(0, 200, 160, 0.1);
+        border: 1px solid rgba(0, 200, 160, 0.25);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-top: 8px;
+        letter-spacing: 0.04em;
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+      nav.nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 6px;
+        padding-left: 10px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.18s;
+        border: 1px solid transparent;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: rgba(0, 200, 160, 0.08);
+        border-color: rgba(0, 200, 160, 0.2);
+        color: var(--accent);
+      }
+      .nav-item svg {
+        flex-shrink: 0;
+        opacity: 0.7;
+      }
+      .nav-item.active svg {
+        opacity: 1;
+      }
+      .sidebar-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-top: auto;
+      }
+      .sstat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 12px;
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+      }
+      .sstat-label {
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .sstat-val {
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--accent);
+        transition: all 0.3s;
+      }
+
+      /* MAIN */
+      .main {
+        padding: 36px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 0;
+      }
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .topbar-left h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .topbar-left p {
+        font-size: 13px;
+        color: var(--text2);
+        margin-top: 4px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .period-tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .period-tab {
+        font-family: 'Syne', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .period-tab:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .period-tab.active {
+        background: var(--accent);
+        color: #000;
+        border-color: transparent;
+        font-weight: 700;
+      }
+
+      /* VIEW PAGES */
+      .view {
+        display: none;
+        flex-direction: column;
+        gap: 24px;
+        animation: fadeUp 0.35s ease;
+      }
+      .view.active {
+        display: flex;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* KPI */
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+      }
+      .kpi::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--kpi-color, var(--accent));
+      }
+      .kpi-label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+      }
+      .kpi-value {
+        font-size: 28px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        transition: all 0.4s;
+      }
+      .kpi-sub {
+        font-size: 12px;
+        color: var(--text2);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .kpi-trend {
+        font-size: 11px;
+        padding: 2px 7px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+      .kpi-trend.up {
+        background: rgba(0, 200, 160, 0.15);
+        color: var(--accent);
+      }
+      .kpi-trend.down {
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--accent3);
+      }
+      .kpi-trend.warn {
+        background: rgba(245, 166, 35, 0.15);
+        color: var(--accent4);
+      }
+      .kpi-trend.neutral {
+        background: rgba(122, 143, 168, 0.1);
+        color: var(--text2);
+      }
+
+      /* GRIDS */
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+      }
+
+      /* CARD */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text2);
+      }
+      .card-tag {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* COMP BARS */
+      .comp-list {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+      }
+      .comp-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 5px;
+      }
+      .comp-name {
+        font-size: 13px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .comp-score {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .comp-bar {
+        height: 5px;
+        background: var(--surface3);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .comp-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* TIMELINE */
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .tl-item {
+        display: flex;
+        gap: 14px;
+        padding-bottom: 18px;
+      }
+      .tl-item:last-child {
+        padding-bottom: 0;
+      }
+      .tl-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 30px;
+        flex-shrink: 0;
+      }
+      .tl-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid;
+        flex-shrink: 0;
+      }
+      .tl-line {
+        flex: 1;
+        width: 1px;
+        background: var(--border);
+        margin-top: 4px;
+      }
+      .tl-item:last-child .tl-line {
+        display: none;
+      }
+      .tl-content {
+        flex: 1;
+        border-radius: 10px;
+        padding: 13px 15px;
+        margin-bottom: 4px;
+      }
+      .tl-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .tl-type {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .tl-date {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+        white-space: nowrap;
+      }
+      .tl-comp {
+        font-size: 13px;
+        color: var(--text);
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .tl-feedback {
+        font-size: 12px;
+        color: var(--text2);
+        line-height: 1.6;
+        font-style: italic;
+      }
+      .tl-prof {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 6px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .tl-score-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+      .entrustment {
+        display: flex;
+        gap: 3px;
+      }
+      .e-pip {
+        width: 14px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--surface3);
+      }
+      .e-pip.filled {
+        background: var(--accent);
+      }
+
+      /* DONUT */
+      .donut-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .donut-center {
+        position: absolute;
+        text-align: center;
+        pointer-events: none;
+      }
+      .donut-val {
+        font-size: 26px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+        line-height: 1;
+      }
+      .donut-lbl {
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+      }
+
+      /* AVAL CHIPS */
+      .aval-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .aval-chip {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .aval-chip-type {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+      }
+      .aval-chip-val {
+        font-size: 20px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        transition: all 0.4s;
+      }
+      .aval-chip-n {
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .aval-chip-bar {
+        height: 3px;
+        border-radius: 2px;
+        margin-top: 6px;
+        transition: all 0.6s;
+      }
+
+      /* HEATMAP */
+      .hm-periods {
+        display: flex;
+        gap: 4px;
+        padding-left: 100px;
+        margin-bottom: 4px;
+      }
+      .hm-period {
+        flex: 1;
+        font-size: 10px;
+        color: var(--text3);
+        text-align: center;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .hm-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .hm-label {
+        font-size: 11px;
+        color: var(--text2);
+        width: 92px;
+        text-align: right;
+        font-family: 'JetBrains Mono', monospace;
+        flex-shrink: 0;
+      }
+      .hm-cells {
+        display: flex;
+        gap: 4px;
+        flex: 1;
+      }
+      .hm-cell {
+        flex: 1;
+        height: 26px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        cursor: default;
+        transition:
+          transform 0.15s,
+          opacity 0.4s;
+      }
+      .hm-cell:hover {
+        transform: scale(1.08);
+      }
+      .hm-cell.current {
+        outline: 2px solid rgba(0, 200, 160, 0.5);
+        outline-offset: 1px;
+      }
+
+      /* FEEDBACKS */
+      .fb-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .fb-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+      }
+      .fb-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .fb-type-badge {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 3px 9px;
+        border-radius: 20px;
+        border: 1px solid;
+      }
+      .fb-prof {
+        font-size: 12px;
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+        margin-left: auto;
+      }
+      .fb-text {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.7;
+        font-style: italic;
+      }
+      .fb-competencia {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 8px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .fb-date {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* EVOLUCAO */
+      .evo-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .evo-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .evo-label {
+        font-size: 12px;
+        color: var(--text2);
+        width: 130px;
+        flex-shrink: 0;
+        font-weight: 500;
+      }
+      .evo-bars {
+        display: flex;
+        gap: 6px;
+        flex: 1;
+        align-items: flex-end;
+        height: 60px;
+      }
+      .evo-bar-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        height: 100%;
+        justify-content: flex-end;
+      }
+      .evo-bar {
+        width: 100%;
+        border-radius: 3px 3px 0 0;
+        transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 4px;
+      }
+      .evo-bar-label {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .evo-val {
+        font-size: 11px;
+        color: var(--text2);
+        width: 36px;
+        text-align: right;
+        font-family: 'JetBrains Mono', monospace;
+        flex-shrink: 0;
+      }
+
+      /* AVALIACOES PAGE */
+      .aval-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 6px;
+      }
+      .aval-table th {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text3);
+        text-align: left;
+        padding: 0 12px 8px;
+      }
+      .aval-table td {
+        padding: 11px 12px;
+        font-size: 13px;
+        color: var(--text2);
+        background: var(--surface2);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .aval-table td:first-child {
+        border-left: 1px solid var(--border);
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      }
+      .aval-table td:last-child {
+        border-right: 1px solid var(--border);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+      .aval-table tr:hover td {
+        background: var(--surface3);
+      }
+      .tipo-pill {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 3px 9px;
+        border-radius: 20px;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      @media (max-width: 1100px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+          height: auto;
+        }
+        .kpi-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .main {
+          padding: 20px;
+        }
+      }
+      @media (max-width: 600px) {
+        .kpi-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid2,
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-mark">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#000"
+              stroke-width="2.5"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          Enfermagem
+        </div>
+
+        <div class="avatar-section">
+          <div class="avatar">MO</div>
+          <div class="student-name">Mariana Oliveira</div>
+          <div class="student-meta">
+            Matrícula: ENF-2023-047<br />
+            Turma: A · Ingresso: 2023.1
+          </div>
+          <div class="status-badge">
+            <span class="status-dot"></span>Em progresso
+          </div>
+        </div>
+
+        <nav class="nav">
+          <div class="nav-label">Visualização</div>
+          <div class="nav-item active" onclick="showView('portfolio', this)">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Portfólio
+          </div>
+          <div class="nav-item" onclick="showView('evolucao', this)">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Evolução
+          </div>
+          <div class="nav-item" onclick="showView('avaliacoes', this)">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            Avaliações
+          </div>
+          <div class="nav-item" onclick="showView('feedbacks', this)">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
+            </svg>
+            Feedbacks
+          </div>
+        </nav>
+
+        <div class="sidebar-stats">
+          <div class="sstat">
+            <span class="sstat-label">Total de avaliações</span
+            ><span class="sstat-val" id="ss-total">—</span>
+          </div>
+          <div class="sstat">
+            <span class="sstat-label">Professores avaliadores</span
+            ><span class="sstat-val" id="ss-profs">—</span>
+          </div>
+          <div class="sstat">
+            <span class="sstat-label">Último registro</span
+            ><span class="sstat-val" id="ss-ultimo">—</span>
+          </div>
+          <div class="sstat">
+            <span class="sstat-label">IRA geral</span
+            ><span class="sstat-val" id="ss-ira">—</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="topbar">
+          <div class="topbar-left">
+            <h1 id="page-title">Portfólio de Competências</h1>
+            <p>
+              Graduação em Enfermagem · Currículo Integrado por Competências
+            </p>
+          </div>
+          <div class="period-tabs" id="period-tabs">
+            <button class="period-tab" onclick="setPeriod(1)">1º</button>
+            <button class="period-tab" onclick="setPeriod(2)">2º</button>
+            <button class="period-tab" onclick="setPeriod(3)">3º</button>
+            <button class="period-tab" onclick="setPeriod(4)">4º</button>
+            <button class="period-tab" onclick="setPeriod(5)">5º</button>
+          </div>
+        </div>
+
+        <!-- VIEW: PORTFÓLIO -->
+        <div class="view active" id="view-portfolio">
+          <div class="kpi-row" id="kpi-row"></div>
+          <div class="grid2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Radar de Domínios</span
+                ><span class="card-tag" id="radar-tag">—</span>
+              </div>
+              <canvas
+                id="radar-canvas"
+                width="260"
+                height="240"
+                style="display: block; margin: 0 auto"
+              ></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Competências por Domínio</span
+                ><span class="card-tag">DCN Enfermagem</span>
+              </div>
+              <div class="comp-list" id="comp-list"></div>
+            </div>
+          </div>
+          <div class="grid3">
+            <div class="card" style="grid-column: span 2">
+              <div class="card-header">
+                <span class="card-title">Modalidades de Avaliação</span
+                ><span class="card-tag" id="aval-tag">acumulado</span>
+              </div>
+              <div class="aval-grid" id="aval-grid"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Distribuição</span>
+              </div>
+              <div class="donut-wrap" style="height: 170px">
+                <canvas id="donut-canvas" width="170" height="170"></canvas>
+                <div class="donut-center">
+                  <div class="donut-val" id="donut-total">—</div>
+                  <div class="donut-lbl">avaliações</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Heatmap · Competências × Períodos</span
+              ><span class="card-tag">histórico completo</span>
+            </div>
+            <div id="heatmap"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Linha do Tempo</span
+              ><span class="card-tag" id="tl-tag">—</span>
+            </div>
+            <div class="timeline" id="timeline"></div>
+          </div>
+        </div>
+
+        <!-- VIEW: EVOLUÇÃO -->
+        <div class="view" id="view-evolucao">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"
+                >Evolução por Domínio — Todos os Períodos</span
+              ><span class="card-tag">1º ao 5º período</span>
+            </div>
+            <div class="evo-section" id="evo-section"></div>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Entrustment ao longo do curso</span>
+              </div>
+              <canvas
+                id="evo-line-canvas"
+                width="400"
+                height="200"
+                style="width: 100%; height: 200px"
+              ></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Índice de competência geral</span>
+              </div>
+              <canvas
+                id="evo-area-canvas"
+                width="400"
+                height="200"
+                style="width: 100%; height: 200px"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: AVALIAÇÕES -->
+        <div class="view" id="view-avaliacoes">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Todas as Avaliações</span
+              ><span class="card-tag" id="aval-count-tag">—</span>
+            </div>
+            <table class="aval-table" id="aval-table">
+              <thead>
+                <tr>
+                  <th>Modalidade</th>
+                  <th>Competência</th>
+                  <th>Professor</th>
+                  <th>Nota</th>
+                  <th>Entrustment</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="aval-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VIEW: FEEDBACKS -->
+        <div class="view" id="view-feedbacks">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Feedbacks dos Professores</span
+              ><span class="card-tag" id="fb-count-tag">—</span>
+            </div>
+            <div class="fb-list" id="fb-list"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────────────
+      // DADOS POR PERÍODO
+      // ─────────────────────────────────────────────
+      const DOMINIOS_NAMES = [
+        'Cuidado clínico',
+        'Comunicação',
+        'Tom. de decisão',
+        'Ética profissional',
+        'Ensino/educação',
+        'Gestão',
+      ];
+      const DOMINIO_COLORS = [
+        '#00c8a0',
+        '#0092ff',
+        '#b06bff',
+        '#f5a623',
+        '#ff6b6b',
+        '#3d7ab0',
+      ];
+
+      const TIPO_COLORS = {
+        OSCE: {
+          color: '#00c8a0',
+          bg: 'rgba(0,200,160,.12)',
+          border: 'rgba(0,200,160,.3)',
+        },
+        OSPE: {
+          color: '#0092ff',
+          bg: 'rgba(0,146,255,.12)',
+          border: 'rgba(0,146,255,.3)',
+        },
+        'Ensino Clínico': {
+          color: '#b06bff',
+          bg: 'rgba(176,107,255,.12)',
+          border: 'rgba(176,107,255,.3)',
+        },
+        Teórica: {
+          color: '#f5a623',
+          bg: 'rgba(245,166,35,.12)',
+          border: 'rgba(245,166,35,.3)',
+        },
+      };
+
+      const DATA = {
+        1: {
+          periodo: '1º período · 2023.1',
+          dominios: [28, 15, 10, 45, 12, 0],
+          avaliacoes: [
+            { tipo: 'Teórica', n: 3, media: 7.2, color: '#f5a623' },
+            { tipo: 'OSCE', n: 1, media: 6.5, color: '#00c8a0' },
+            { tipo: 'Ensino Clínico', n: 2, media: 6.0, color: '#b06bff' },
+            { tipo: 'OSPE', n: 0, media: 0, color: '#0092ff' },
+          ],
+          kpi: { ic: 38, entrustment: 1.8, avalTotal: 6, domAval: 3 },
+          kpiTrend: { ic: 'neutro', en: 'neutro' },
+          profs: 3,
+          ultimo: '20 nov 2023',
+          ira: '6.8',
+          timeline: [
+            {
+              tipo: 'Teórica',
+              date: '20 nov 2023',
+              comp: 'Fundamentos de anatomia e fisiologia aplicados',
+              feedback:
+                'Boa base teórica. Ainda insegura na aplicação clínica dos conceitos. Continue revisando os sistemas.',
+              prof: 'Prof. Bruno Ferreira',
+              score: 7.2,
+              entrustment: 2,
+            },
+            {
+              tipo: 'Ensino Clínico',
+              date: '05 nov 2023',
+              comp: 'Higienização e cuidados básicos de enfermagem',
+              feedback:
+                'Primeira exposição clínica. Nervosismo esperado. Precisará de mais supervisão nos próximos módulos.',
+              prof: 'Profa. Sandra Luz',
+              score: 6.0,
+              entrustment: 1,
+            },
+            {
+              tipo: 'OSCE',
+              date: '18 out 2023',
+              comp: 'Técnicas de comunicação com o paciente',
+              feedback:
+                'Demonstrou empatia mas precisa desenvolver objetividade na coleta de informações.',
+              prof: 'Profa. Karin Mendes',
+              score: 6.5,
+              entrustment: 2,
+            },
+          ],
+        },
+        2: {
+          periodo: '2º período · 2023.2',
+          dominios: [45, 32, 22, 58, 20, 0],
+          avaliacoes: [
+            { tipo: 'Teórica', n: 3, media: 7.6, color: '#f5a623' },
+            { tipo: 'OSCE', n: 2, media: 7.1, color: '#00c8a0' },
+            { tipo: 'Ensino Clínico', n: 3, media: 6.8, color: '#b06bff' },
+            { tipo: 'OSPE', n: 1, media: 7.0, color: '#0092ff' },
+          ],
+          kpi: { ic: 50, entrustment: 2.3, avalTotal: 9, domAval: 4 },
+          kpiTrend: { ic: 'up', en: 'up' },
+          profs: 4,
+          ultimo: '18 dez 2023',
+          ira: '7.1',
+          timeline: [
+            {
+              tipo: 'OSPE',
+              date: '18 dez 2023',
+              comp: 'Administração de medicamentos via oral e tópica',
+              feedback:
+                'Técnica correta. Boa conferência dos 5 certos. Documentação ainda imprecisa.',
+              prof: 'Prof. Renato Alves',
+              score: 7.0,
+              entrustment: 2,
+            },
+            {
+              tipo: 'Teórica',
+              date: '05 dez 2023',
+              comp: 'Farmacologia básica — analgésicos e anti-inflamatórios',
+              feedback:
+                'Bom desempenho na prova. Relacionou teoria e prática adequadamente.',
+              prof: 'Prof. Bruno Ferreira',
+              score: 7.8,
+              entrustment: 3,
+            },
+            {
+              tipo: 'Ensino Clínico',
+              date: '20 nov 2023',
+              comp: 'Cuidados de higiene e conforto do paciente acamado',
+              feedback:
+                'Evolução clara em relação ao período anterior. Mais segura na abordagem.',
+              prof: 'Profa. Sandra Luz',
+              score: 7.0,
+              entrustment: 2,
+            },
+          ],
+        },
+        3: {
+          periodo: '3º período · 2024.1',
+          dominios: [60, 48, 40, 70, 35, 8],
+          avaliacoes: [
+            { tipo: 'Teórica', n: 2, media: 8.0, color: '#f5a623' },
+            { tipo: 'OSCE', n: 3, media: 7.5, color: '#00c8a0' },
+            { tipo: 'Ensino Clínico', n: 3, media: 7.1, color: '#b06bff' },
+            { tipo: 'OSPE', n: 2, media: 7.6, color: '#0092ff' },
+          ],
+          kpi: { ic: 61, entrustment: 2.8, avalTotal: 10, domAval: 5 },
+          kpiTrend: { ic: 'up', en: 'up' },
+          profs: 5,
+          ultimo: '22 jun 2024',
+          ira: '7.4',
+          timeline: [
+            {
+              tipo: 'OSCE',
+              date: '22 jun 2024',
+              comp: 'Avaliação neurológica — escala de Glasgow',
+              feedback:
+                'Sequência correta de avaliação. Comunicou achados com clareza ao supervisor.',
+              prof: 'Profa. Karin Mendes',
+              score: 7.8,
+              entrustment: 3,
+            },
+            {
+              tipo: 'Ensino Clínico',
+              date: '10 jun 2024',
+              comp: 'Cateterismo vesical feminino',
+              feedback:
+                'Boa técnica asséptica. Segunda execução sem intercorrências. Pode realizar com supervisão à distância.',
+              prof: 'Prof. Renato Alves',
+              score: 7.2,
+              entrustment: 3,
+            },
+            {
+              tipo: 'Teórica',
+              date: '28 mai 2024',
+              comp: 'Semiologia e semiotécnica — módulo cardiovascular',
+              feedback:
+                'Excelente resolução das questões clínicas. Raciocínio diagnóstico bem estruturado.',
+              prof: 'Prof. Bruno Ferreira',
+              score: 8.2,
+              entrustment: 4,
+            },
+          ],
+        },
+        4: {
+          periodo: '4º período · 2024.2',
+          dominios: [72, 62, 55, 82, 48, 12],
+          avaliacoes: [
+            { tipo: 'Teórica', n: 2, media: 8.4, color: '#f5a623' },
+            { tipo: 'OSCE', n: 4, media: 7.8, color: '#00c8a0' },
+            { tipo: 'Ensino Clínico', n: 3, media: 7.4, color: '#b06bff' },
+            { tipo: 'OSPE', n: 2, media: 7.9, color: '#0092ff' },
+          ],
+          kpi: { ic: 72, entrustment: 3.0, avalTotal: 11, domAval: 5 },
+          kpiTrend: { ic: 'up', en: 'up' },
+          profs: 5,
+          ultimo: '10 dez 2024',
+          ira: '7.6',
+          timeline: [
+            {
+              tipo: 'OSCE',
+              date: '10 dez 2024',
+              comp: 'Ressuscitação cardiopulmonar — suporte básico de vida',
+              feedback:
+                'Excelente desempenho. Seguiu protocolo sem hesitação. Liderança positiva na cena simulada.',
+              prof: 'Profa. Karin Mendes',
+              score: 8.5,
+              entrustment: 4,
+            },
+            {
+              tipo: 'Teórica',
+              date: '25 nov 2024',
+              comp: 'Patologia clínica — alterações metabólicas',
+              feedback:
+                'Alto nível de raciocínio clínico. Respostas bem fundamentadas.',
+              prof: 'Prof. Bruno Ferreira',
+              score: 8.6,
+              entrustment: 4,
+            },
+            {
+              tipo: 'Ensino Clínico',
+              date: '08 nov 2024',
+              comp: 'Punção venosa periférica e instalação de acesso IV',
+              feedback:
+                'Realizou o procedimento com segurança na segunda tentativa. Documentação correta.',
+              prof: 'Prof. Renato Alves',
+              score: 7.2,
+              entrustment: 3,
+            },
+          ],
+        },
+        5: {
+          periodo: '5º período · 2026.1',
+          dominios: [82, 74, 68, 90, 61, 20],
+          avaliacoes: [
+            { tipo: 'Teórica', n: 5, media: 8.6, color: '#f5a623' },
+            { tipo: 'OSCE', n: 7, media: 7.9, color: '#00c8a0' },
+            { tipo: 'Ensino Clínico', n: 8, media: 7.4, color: '#b06bff' },
+            { tipo: 'OSPE', n: 4, media: 8.2, color: '#0092ff' },
+          ],
+          kpi: { ic: 78, entrustment: 3.4, avalTotal: 24, domAval: 5 },
+          kpiTrend: { ic: 'up', en: 'up' },
+          profs: 6,
+          ultimo: '28 mai 2026',
+          ira: '7.8',
+          timeline: [
+            {
+              tipo: 'OSCE',
+              date: '28 mai 2026',
+              comp: 'Avaliação de sinais vitais e exame físico',
+              feedback:
+                'Excelente postura clínica. Organização impecável. Precisa melhorar comunicação verbal durante o procedimento.',
+              prof: 'Profa. Karin Mendes',
+              score: 8.5,
+              entrustment: 4,
+            },
+            {
+              tipo: 'Ensino Clínico',
+              date: '19 mai 2026',
+              comp: 'Administração de medicamentos IV — contexto hospitalar',
+              feedback:
+                'Segurança no procedimento após segunda tentativa. Ainda hesitante na conferência dos 9 certos.',
+              prof: 'Prof. Renato Alves',
+              score: 6.8,
+              entrustment: 3,
+            },
+            {
+              tipo: 'OSPE',
+              date: '10 mai 2026',
+              comp: 'Curativo complexo e prevenção de infecção',
+              feedback:
+                'Ótima técnica asséptica. Documentação correta e completa. Tempo de execução ainda acima do esperado.',
+              prof: 'Profa. Sandra Luz',
+              score: 8.0,
+              entrustment: 4,
+            },
+            {
+              tipo: 'Teórica',
+              date: '28 abr 2026',
+              comp: 'Farmacologia — módulo cardiovascular',
+              feedback:
+                'Domínio teórico consistente. Relacionou bem conteúdos com a prática clínica.',
+              prof: 'Prof. Bruno Ferreira',
+              score: 9.0,
+              entrustment: 5,
+            },
+          ],
+        },
+      };
+
+      // heatmap acumulado (fixo, mostra todos os períodos)
+      const HM_DATA = [
+        [28, 45, 60, 72, 82],
+        [15, 32, 48, 62, 74],
+        [10, 22, 40, 55, 68],
+        [45, 58, 70, 82, 90],
+        [12, 20, 35, 48, 61],
+        [0, 0, 8, 12, 20],
+      ];
+
+      let currentPeriod = 5;
+      let currentView = 'portfolio';
+
+      // ─────────────────────────────────────────────
+      // NAVEGAÇÃO
+      // ─────────────────────────────────────────────
+      function showView(name, el) {
+        currentView = name;
+        document
+          .querySelectorAll('.view')
+          .forEach((v) => v.classList.remove('active'));
+        document.getElementById('view-' + name).classList.add('active');
+        document
+          .querySelectorAll('.nav-item')
+          .forEach((n) => n.classList.remove('active'));
+        if (el) el.classList.add('active');
+
+        const titles = {
+          portfolio: 'Portfólio de Competências',
+          evolucao: 'Evolução',
+          avaliacoes: 'Avaliações',
+          feedbacks: 'Feedbacks',
+        };
+        document.getElementById('page-title').textContent =
+          titles[name] || name;
+
+        // period tabs só no portfolio
+        const hasPeriod =
+          name === 'portfolio' || name === 'avaliacoes' || name === 'feedbacks';
+        document.getElementById('period-tabs').style.visibility = hasPeriod
+          ? 'visible'
+          : 'hidden';
+
+        if (name === 'evolucao') renderEvolucao();
+        if (name === 'avaliacoes') renderAvaliacoesTable();
+        if (name === 'feedbacks') renderFeedbacks();
+      }
+
+      function setPeriod(p) {
+        currentPeriod = p;
+        document
+          .querySelectorAll('.period-tab')
+          .forEach((t, i) => t.classList.toggle('active', i + 1 === p));
+        renderAll();
+      }
+
+      // ─────────────────────────────────────────────
+      // RENDER PRINCIPAL
+      // ─────────────────────────────────────────────
+      function renderAll() {
+        const d = DATA[currentPeriod];
+        // sidebar stats
+        document.getElementById('ss-total').textContent = d.avaliacoes.reduce(
+          (s, a) => s + a.n,
+          0,
+        );
+        document.getElementById('ss-profs').textContent = d.profs;
+        document.getElementById('ss-ultimo').textContent = d.ultimo;
+        document.getElementById('ss-ira').textContent = d.ira;
+
+        renderKPIs(d);
+        renderComps(d);
+        renderAvalChips(d);
+        renderTimeline(d);
+        drawRadar(d.dominios);
+        drawDonut(d.avaliacoes);
+        renderHeatmap();
+
+        document.getElementById('radar-tag').textContent = d.periodo;
+        document.getElementById('tl-tag').textContent = d.periodo;
+        document.getElementById('aval-tag').textContent = d.periodo;
+
+        if (currentView === 'avaliacoes') renderAvaliacoesTable();
+        if (currentView === 'feedbacks') renderFeedbacks();
+      }
+
+      // ─────────────────────────────────────────────
+      // KPIs
+      // ─────────────────────────────────────────────
+      function renderKPIs(d) {
+        const k = d.kpi;
+        const trendClass = (t) =>
+          t === 'up'
+            ? 'up'
+            : t === 'down'
+              ? 'down'
+              : t === 'warn'
+                ? 'warn'
+                : 'neutral';
+        const trendLabel = (t, v) =>
+          t === 'up'
+            ? `↑ vs anterior`
+            : t === 'down'
+              ? `↓ vs anterior`
+              : t === 'warn'
+                ? v
+                : '1º período';
+
+        document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi" style="--kpi-color:var(--accent)">
+      <div class="kpi-label">Índice de Competência</div>
+      <div class="kpi-value">${k.ic}<span style="font-size:16px;color:var(--text2)">%</span></div>
+      <div class="kpi-sub"><span class="kpi-trend ${trendClass(d.kpiTrend.ic)}">${trendLabel(d.kpiTrend.ic, '')}</span></div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--accent2)">
+      <div class="kpi-label">Entrustment Médio</div>
+      <div class="kpi-value">${k.entrustment.toFixed(1)}<span style="font-size:16px;color:var(--text2)">/5</span></div>
+      <div class="kpi-sub"><span class="kpi-trend ${trendClass(d.kpiTrend.en)}">${trendLabel(d.kpiTrend.en, '')}</span></div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--accent4)">
+      <div class="kpi-label">Avaliações no Período</div>
+      <div class="kpi-value">${k.avalTotal}</div>
+      <div class="kpi-sub" style="color:var(--text3)">${d.profs} professores</div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--accent5)">
+      <div class="kpi-label">Domínios Avaliados</div>
+      <div class="kpi-value">${k.domAval}<span style="font-size:16px;color:var(--text2)">/6</span></div>
+      <div class="kpi-sub" style="color:var(--text3)">${k.domAval < 6 ? 'Gestão não avaliado' : 'Cobertura completa'}</div>
+    </div>`;
+      }
+
+      // ─────────────────────────────────────────────
+      // COMPETÊNCIAS BARS
+      // ─────────────────────────────────────────────
+      function renderComps(d) {
+        const cl = document.getElementById('comp-list');
+        cl.innerHTML = DOMINIOS_NAMES.map((n, i) => {
+          const s = d.dominios[i];
+          const c = DOMINIO_COLORS[i];
+          return `<div class="comp-item">
+      <div class="comp-top">
+        <span class="comp-name">${n}</span>
+        <span class="comp-score" style="color:${c}">${s}%</span>
+      </div>
+      <div class="comp-bar"><div class="comp-fill" style="background:${c};width:0" data-w="${s}"></div></div>
+    </div>`;
+        }).join('');
+        setTimeout(
+          () =>
+            document
+              .querySelectorAll('.comp-fill')
+              .forEach((e) => (e.style.width = e.dataset.w + '%')),
+          50,
+        );
+      }
+
+      // ─────────────────────────────────────────────
+      // AVAL CHIPS
+      // ─────────────────────────────────────────────
+      function renderAvalChips(d) {
+        document.getElementById('aval-grid').innerHTML = d.avaliacoes
+          .map(
+            (a) => `
+    <div class="aval-chip">
+      <div class="aval-chip-type">${a.tipo}</div>
+      <div class="aval-chip-val" style="color:${a.color}">${a.n > 0 ? a.media.toFixed(1) : '—'}</div>
+      <div class="aval-chip-n">${a.n} avaliação${a.n !== 1 ? 'ões' : ''}</div>
+      <div class="aval-chip-bar" style="background:linear-gradient(90deg,${a.color} ${a.n > 0 ? a.media * 10 : 0}%,var(--surface3) ${a.n > 0 ? a.media * 10 : 0}%)"></div>
+    </div>`,
+          )
+          .join('');
+        const total = d.avaliacoes.reduce((s, a) => s + a.n, 0);
+        document.getElementById('donut-total').textContent = total;
+      }
+
+      // ─────────────────────────────────────────────
+      // TIMELINE
+      // ─────────────────────────────────────────────
+      function renderTimeline(d) {
+        document.getElementById('timeline').innerHTML = d.timeline
+          .map((t) => {
+            const tc = TIPO_COLORS[t.tipo] || {
+              color: '#7a8fa8',
+              bg: 'rgba(122,143,168,.1)',
+              border: 'rgba(122,143,168,.3)',
+            };
+            const pips = Array.from(
+              { length: 5 },
+              (_, i) =>
+                `<div class="e-pip${i < t.entrustment ? ' filled' : ''}"></div>`,
+            ).join('');
+            return `<div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:${tc.bg};border-color:${tc.border};color:${tc.color}">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content" style="background:${tc.bg};border:1px solid ${tc.border}">
+        <div class="tl-header">
+          <span class="tl-type" style="color:${tc.color}">${t.tipo}</span>
+          <span class="tl-date">${t.date}</span>
+        </div>
+        <div class="tl-comp">${t.comp}</div>
+        <div class="tl-feedback">"${t.feedback}"</div>
+        <div class="tl-score-row">
+          <span style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">Nota: <strong style="color:${tc.color}">${t.score}</strong></span>
+          <span style="font-size:11px;color:var(--text3)">Entrustment:</span>
+          <div class="entrustment">${pips}</div>
+        </div>
+        <div class="tl-prof">↳ ${t.prof}</div>
+      </div>
+    </div>`;
+          })
+          .join('');
+      }
+
+      // ─────────────────────────────────────────────
+      // HEATMAP
+      // ─────────────────────────────────────────────
+      function renderHeatmap() {
+        let html = `<div class="hm-periods"><div style="width:100px;flex-shrink:0"></div>`;
+        ['1º', '2º', '3º', '4º', '5º'].forEach(
+          (p) => (html += `<div class="hm-period">${p}</div>`),
+        );
+        html += '</div>';
+        DOMINIOS_NAMES.forEach((d, i) => {
+          html += `<div class="hm-row"><div class="hm-label">${d.split('/')[0]}</div><div class="hm-cells">`;
+          HM_DATA[i].forEach((v, pi) => {
+            const isC = pi + 1 === currentPeriod;
+            const alpha = v === 0 ? 0.06 : 0.15 + (v / 100) * 0.65;
+            html += `<div class="hm-cell${isC ? ' current' : ''}" style="background:${DOMINIO_COLORS[i]};opacity:${alpha}" title="${d} · ${pi + 1}º período: ${v || '—'}%">${v ? v + '%' : '—'}</div>`;
+          });
+          html += '</div></div>';
+        });
+        document.getElementById('heatmap').innerHTML = html;
+      }
+
+      // ─────────────────────────────────────────────
+      // RADAR
+      // ─────────────────────────────────────────────
+      function drawRadar(scores) {
+        const canvas = document.getElementById('radar-canvas');
+        const ctx = canvas.getContext('2d');
+        const cx = 130,
+          cy = 120,
+          R = 95,
+          n = 6;
+        ctx.clearRect(0, 0, 260, 240);
+
+        for (let r = 1; r <= 5; r++) {
+          ctx.beginPath();
+          for (let i = 0; i < n; i++) {
+            const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+            const x = cx + R * (r / 5) * Math.cos(a),
+              y = cy + R * (r / 5) * Math.sin(a);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = `rgba(30,42,58,${r === 5 ? 1 : 0.5})`;
+          ctx.lineWidth = r === 5 ? 1 : 0.5;
+          ctx.stroke();
+        }
+        for (let i = 0; i < n; i++) {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+          ctx.strokeStyle = 'rgba(30,42,58,.7)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        scores.forEach((s, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          const r = (R * s) / 100;
+          const x = cx + r * Math.cos(a),
+            y = cy + r * Math.sin(a);
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        g.addColorStop(0, 'rgba(0,200,160,.3)');
+        g.addColorStop(1, 'rgba(0,146,255,.07)');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,200,160,.65)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        scores.forEach((s, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          const r = (R * s) / 100;
+          const x = cx + r * Math.cos(a),
+            y = cy + r * Math.sin(a);
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = DOMINIO_COLORS[i];
+          ctx.fill();
+          ctx.strokeStyle = '#0b0f14';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        });
+
+        ctx.font = '500 11px Syne,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        DOMINIOS_NAMES.forEach((d, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          const lx = cx + (R + 18) * Math.cos(a),
+            ly = cy + (R + 18) * Math.sin(a);
+          ctx.fillStyle = scores[i] < 5 ? '#3d5470' : DOMINIO_COLORS[i];
+          ctx.fillText(d.split(' ')[0], lx, ly);
+        });
+      }
+
+      // ─────────────────────────────────────────────
+      // DONUT
+      // ─────────────────────────────────────────────
+      function drawDonut(avaliacoes) {
+        const canvas = document.getElementById('donut-canvas');
+        const ctx = canvas.getContext('2d');
+        const cx = 85,
+          cy = 85,
+          R = 70,
+          r = 48;
+        ctx.clearRect(0, 0, 170, 170);
+        const total = avaliacoes.reduce((s, a) => s + a.n, 0);
+        if (!total) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, R, 0, Math.PI * 2);
+          ctx.strokeStyle = 'var(--surface3)';
+          ctx.lineWidth = 20;
+          ctx.stroke();
+          return;
+        }
+        let start = -0.5 * Math.PI;
+        avaliacoes
+          .filter((a) => a.n > 0)
+          .forEach((a) => {
+            const sweep = (2 * Math.PI * a.n) / total;
+            ctx.beginPath();
+            ctx.arc(cx, cy, R, start, start + sweep);
+            ctx.arc(cx, cy, r, start + sweep, start, true);
+            ctx.closePath();
+            ctx.fillStyle = a.color;
+            ctx.fill();
+            start += sweep;
+          });
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - 2, 0, 2 * Math.PI);
+        ctx.fillStyle = '#111820';
+        ctx.fill();
+      }
+
+      // ─────────────────────────────────────────────
+      // EVOLUÇÃO VIEW
+      // ─────────────────────────────────────────────
+      function renderEvolucao() {
+        const section = document.getElementById('evo-section');
+        section.innerHTML = DOMINIOS_NAMES.map((nome, di) => {
+          const vals = [1, 2, 3, 4, 5].map((p) => DATA[p].dominios[di]);
+          const color = DOMINIO_COLORS[di];
+          const bars = vals
+            .map(
+              (v, i) => `
+      <div class="evo-bar-wrap">
+        <div class="evo-bar" style="background:${color};height:${Math.max(4, v * 0.55)}px;opacity:${v < 5 ? 0.2 : 0.7 + (v / 100) * 0.3}"></div>
+        <div class="evo-bar-label">${i + 1}º</div>
+      </div>`,
+            )
+            .join('');
+          return `<div class="evo-row">
+      <div class="evo-label" style="color:${color}">${nome}</div>
+      <div class="evo-bars">${bars}</div>
+      <div class="evo-val" style="color:${color}">${vals[4]}%</div>
+    </div>`;
+        }).join('');
+
+        // line chart — entrustment
+        drawLineChart(
+          'evo-line-canvas',
+          [1, 2, 3, 4, 5],
+          [1.8, 2.3, 2.8, 3.0, 3.4],
+          '#00c8a0',
+          'Entrustment médio',
+          'Nível',
+        );
+
+        // area chart — IC
+        drawLineChart(
+          'evo-area-canvas',
+          [1, 2, 3, 4, 5],
+          [38, 50, 61, 72, 78],
+          '#0092ff',
+          'Índice de Competência',
+          '%',
+        );
+      }
+
+      function drawLineChart(id, labels, values, color, label, unit) {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.offsetWidth || 400,
+          H = 200;
+        canvas.width = W;
+        canvas.height = H;
+        ctx.clearRect(0, 0, W, H);
+
+        const pad = { t: 20, r: 20, b: 36, l: 40 };
+        const cw = W - pad.l - pad.r,
+          ch = H - pad.t - pad.b;
+        const minV = 0,
+          maxV = Math.max(...values) * 1.1;
+
+        // grid
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + ch * (1 - i / 4);
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y);
+          ctx.lineTo(pad.l + cw, y);
+          ctx.strokeStyle = 'rgba(30,42,58,.6)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
+        const px = (i) => pad.l + (cw * i) / (labels.length - 1);
+        const py = (v) => pad.t + ch * (1 - (v - minV) / (maxV - minV));
+
+        // area fill
+        ctx.beginPath();
+        ctx.moveTo(px(0), py(values[0]));
+        values.forEach((v, i) => ctx.lineTo(px(i), py(v)));
+        ctx.lineTo(px(values.length - 1), pad.t + ch);
+        ctx.lineTo(px(0), pad.t + ch);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(0, pad.t, 0, pad.t + ch);
+        g.addColorStop(0, color + '44');
+        g.addColorStop(1, color + '05');
+        ctx.fillStyle = g;
+        ctx.fill();
+
+        // line
+        ctx.beginPath();
+        values.forEach((v, i) =>
+          i === 0 ? ctx.moveTo(px(i), py(v)) : ctx.lineTo(px(i), py(v)),
+        );
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // dots + labels
+        ctx.font = '11px JetBrains Mono,monospace';
+        ctx.textAlign = 'center';
+        values.forEach((v, i) => {
+          ctx.beginPath();
+          ctx.arc(px(i), py(v), 4, 0, Math.PI * 2);
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.strokeStyle = '#0b0f14';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.fillStyle = '#3d5470';
+          ctx.fillText(i + 1 + 'º', px(i), pad.t + ch + 18);
+          ctx.fillStyle = color;
+          ctx.fillText(v + unit, px(i), py(v) - 10);
+        });
+      }
+
+      // ─────────────────────────────────────────────
+      // AVALIAÇÕES TABLE
+      // ─────────────────────────────────────────────
+      function renderAvaliacoesTable() {
+        const d = DATA[currentPeriod];
+        // flatten timeline into table rows
+        const allRows = d.timeline
+          .map((t) => {
+            const tc = TIPO_COLORS[t.tipo] || {
+              color: '#7a8fa8',
+              bg: '',
+              border: '',
+            };
+            const pips = Array.from(
+              { length: 5 },
+              (_, i) =>
+                `<div class="e-pip${i < t.entrustment ? ' filled' : ''}"></div>`,
+            ).join('');
+            return `<tr>
+      <td><span class="tipo-pill" style="color:${tc.color};background:${tc.bg};border-color:${tc.border}">${t.tipo}</span></td>
+      <td style="color:var(--text)">${t.comp}</td>
+      <td>${t.prof.split(' ').slice(0, 2).join(' ')}</td>
+      <td style="color:${tc.color};font-family:'JetBrains Mono',monospace;font-weight:600">${t.score}</td>
+      <td><div class="entrustment">${pips}</div></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${t.date}</td>
+    </tr>`;
+          })
+          .join('');
+        document.getElementById('aval-tbody').innerHTML = allRows;
+        document.getElementById('aval-count-tag').textContent =
+          `${d.timeline.length} registros · ${d.periodo}`;
+      }
+
+      // ─────────────────────────────────────────────
+      // FEEDBACKS
+      // ─────────────────────────────────────────────
+      function renderFeedbacks() {
+        const d = DATA[currentPeriod];
+        document.getElementById('fb-list').innerHTML = d.timeline
+          .map((t) => {
+            const tc = TIPO_COLORS[t.tipo] || {
+              color: '#7a8fa8',
+              bg: 'rgba(122,143,168,.1)',
+              border: 'rgba(122,143,168,.3)',
+            };
+            return `<div class="fb-card">
+      <div class="fb-header">
+        <span class="fb-type-badge" style="color:${tc.color};background:${tc.bg};border-color:${tc.border}">${t.tipo}</span>
+        <span class="fb-date">${t.date}</span>
+        <span class="fb-prof">${t.prof}</span>
+      </div>
+      <div class="fb-text">"${t.feedback}"</div>
+      <div class="fb-competencia">↳ ${t.comp}</div>
+    </div>`;
+          })
+          .join('');
+        document.getElementById('fb-count-tag').textContent =
+          `${d.timeline.length} feedbacks · ${d.periodo}`;
+      }
+
+      // ─────────────────────────────────────────────
+      // INIT
+      // ─────────────────────────────────────────────
+      setPeriod(5);
+      window.addEventListener('resize', () => {
+        if (currentView === 'evolucao') renderEvolucao();
+      });
+    </script>
+  </body>
+</html>

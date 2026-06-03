@@ -1,0 +1,2303 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proficere — Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #09090b;
+        --surface: #111113;
+        --surface2: #18181b;
+        --surface3: #1f1f23;
+        --border: #27272a;
+        --border2: #3f3f46;
+        --text: #fafafa;
+        --text2: #a1a1aa;
+        --text3: #52525b;
+        --admin: #f59e0b;
+        --admin2: #d97706;
+        --admin-bg: rgba(245, 158, 11, 0.08);
+        --admin-border: rgba(245, 158, 11, 0.25);
+        --red: #ef4444;
+        --red-bg: rgba(239, 68, 68, 0.08);
+        --red-border: rgba(239, 68, 68, 0.25);
+        --green: #22c55e;
+        --green-bg: rgba(34, 197, 94, 0.08);
+        --green-border: rgba(34, 197, 94, 0.25);
+        --blue: #3b82f6;
+        --blue-bg: rgba(59, 130, 246, 0.08);
+        --blue-border: rgba(59, 130, 246, 0.25);
+        --radius: 10px;
+        --radius-sm: 6px;
+        --tr: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Syne', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 80% 50% at 50% -20%,
+          rgba(245, 158, 11, 0.06),
+          transparent
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 24px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .logo-mark {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        background: var(--admin);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .logo-name {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: var(--text);
+      }
+      .logo-tag {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--admin);
+        margin-left: 2px;
+      }
+
+      .admin-id {
+        background: var(--admin-bg);
+        border: 1px solid var(--admin-border);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .admin-av {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #78350f, #451a03);
+        border: 1.5px solid var(--admin-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--admin);
+        flex-shrink: 0;
+      }
+      .admin-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .admin-role {
+        font-size: 10px;
+        color: var(--admin);
+        font-family: 'JetBrains Mono', monospace;
+        margin-top: 1px;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .nav-section-label {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 0 10px;
+        margin-bottom: 5px;
+        margin-top: 4px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all var(--tr);
+        border: 1px solid transparent;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--admin-bg);
+        border-color: var(--admin-border);
+        color: var(--admin);
+      }
+      .nav-item svg {
+        flex-shrink: 0;
+        opacity: 0.6;
+      }
+      .nav-item.active svg {
+        opacity: 1;
+      }
+      .nav-count {
+        margin-left: auto;
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text3);
+      }
+
+      .sys-status {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        margin-top: auto;
+      }
+      .ss-title {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 8px;
+      }
+      .ss-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 5px;
+      }
+      .ss-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .ss-label {
+        font-size: 11px;
+        color: var(--text2);
+        flex: 1;
+      }
+      .ss-val {
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text3);
+      }
+
+      /* ── MAIN ── */
+      .main {
+        padding: 30px 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+      }
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .topbar-left h1 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .topbar-left p {
+        font-size: 12px;
+        color: var(--text2);
+        margin-top: 3px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .btn-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        font-family: 'Syne', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border2);
+        background: var(--surface2);
+        color: var(--text2);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--tr);
+      }
+      .btn:hover {
+        background: var(--surface3);
+        color: var(--text);
+      }
+      .btn.admin {
+        background: var(--admin);
+        color: #000;
+        border-color: transparent;
+        font-weight: 600;
+      }
+      .btn.admin:hover {
+        background: #fbbf24;
+      }
+      .btn.danger {
+        color: var(--red);
+        border-color: var(--red-border);
+      }
+      .btn.danger:hover {
+        background: var(--red-bg);
+      }
+
+      /* VIEWS */
+      .view {
+        display: none;
+        flex-direction: column;
+        gap: 18px;
+        animation: fu 0.25s ease;
+      }
+      .view.active {
+        display: flex;
+      }
+      @keyframes fu {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CARD */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .card-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--text2);
+      }
+      .card-tag {
+        font-size: 10px;
+        padding: 2px 9px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* GRIDS */
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .g3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .g4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+
+      /* KPI */
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+      .kpi::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--kc, var(--admin));
+      }
+      .kpi-label {
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+      .kpi-value {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+        line-height: 1;
+      }
+      .kpi-sub {
+        font-size: 10px;
+        color: var(--text3);
+        margin-top: 4px;
+      }
+
+      /* TABLE */
+      .tbl {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 4px;
+      }
+      .tbl th {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+        text-align: left;
+        padding: 0 10px 6px;
+      }
+      .tbl td {
+        padding: 10px 10px;
+        font-size: 12px;
+        color: var(--text2);
+        background: var(--surface2);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        transition: background var(--tr);
+      }
+      .tbl td:first-child {
+        border-left: 1px solid var(--border);
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      }
+      .tbl td:last-child {
+        border-right: 1px solid var(--border);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+      .tbl tr:hover td {
+        background: var(--surface3);
+      }
+      .tbl-name {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      /* BADGE */
+      .badge {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        border: 1px solid;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+      .b-green {
+        color: var(--green);
+        background: var(--green-bg);
+        border-color: var(--green-border);
+      }
+      .b-red {
+        color: var(--red);
+        background: var(--red-bg);
+        border-color: var(--red-border);
+      }
+      .b-amber {
+        color: var(--admin);
+        background: var(--admin-bg);
+        border-color: var(--admin-border);
+      }
+      .b-blue {
+        color: var(--blue);
+        background: var(--blue-bg);
+        border-color: var(--blue-border);
+      }
+      .b-gray {
+        color: var(--text3);
+        background: var(--surface3);
+        border-color: var(--border);
+      }
+
+      /* ICON BUTTON */
+      .icon-btn {
+        background: none;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text3);
+        cursor: pointer;
+        padding: 5px 7px;
+        font-size: 11px;
+        transition: all var(--tr);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .icon-btn:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .icon-btn.del:hover {
+        border-color: var(--red-border);
+        color: var(--red);
+        background: var(--red-bg);
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 300;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 26px;
+        width: 520px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: pop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.94);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .modal-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .modal-close {
+        background: none;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text2);
+        cursor: pointer;
+        padding: 5px 10px;
+        font-size: 11px;
+        transition: all var(--tr);
+      }
+      .modal-close:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .form-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text2);
+      }
+      .form-input {
+        font-family: 'Syne', sans-serif;
+        font-size: 13px;
+        color: var(--text);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 9px 12px;
+        width: 100%;
+        outline: none;
+        transition: border-color var(--tr);
+      }
+      .form-input:focus {
+        border-color: var(--admin);
+      }
+      .form-input::placeholder {
+        color: var(--text3);
+      }
+      select.form-input {
+        cursor: pointer;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .modal-footer {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* COMPETÊNCIA LEVEL PILLS */
+      .level-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .lp {
+        font-size: 10px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--text3);
+        cursor: pointer;
+        transition: all var(--tr);
+        user-select: none;
+      }
+      .lp:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .lp.sel {
+        background: var(--admin-bg);
+        border-color: var(--admin-border);
+        color: var(--admin);
+      }
+
+      /* VINCULO DRAG-DROP VISUAL */
+      .vinculo-grid {
+        display: grid;
+        grid-template-columns: 1fr 40px 1fr;
+        gap: 0;
+        align-items: start;
+      }
+      .vinculo-col {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px;
+      }
+      .vinculo-col-title {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+        margin-bottom: 8px;
+      }
+      .vinculo-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--admin);
+        font-size: 20px;
+        padding-top: 30px;
+      }
+      .vinculo-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 9px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        cursor: pointer;
+        transition: all var(--tr);
+        border: 1px solid transparent;
+      }
+      .vinculo-item:hover {
+        background: var(--surface3);
+        border-color: var(--border);
+      }
+      .vinculo-item.linked {
+        background: var(--admin-bg);
+        border-color: var(--admin-border);
+      }
+      .vi-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .vi-name {
+        font-size: 12px;
+        color: var(--text);
+        flex: 1;
+      }
+      .vi-check {
+        font-size: 12px;
+        color: var(--admin);
+      }
+
+      /* EXPORT */
+      .export-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        cursor: pointer;
+        transition: all var(--tr);
+      }
+      .export-card:hover {
+        border-color: var(--border2);
+        background: var(--surface3);
+      }
+      .export-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .export-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .export-desc {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 2px;
+      }
+      .export-arrow {
+        margin-left: auto;
+        color: var(--text3);
+        font-size: 16px;
+      }
+
+      /* ACTIVITY LOG */
+      .log-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .log-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .log-item:last-child {
+        border-bottom: none;
+      }
+      .log-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+      .log-text {
+        font-size: 12px;
+        color: var(--text2);
+        line-height: 1.5;
+        flex: 1;
+      }
+      .log-text strong {
+        color: var(--text);
+      }
+      .log-time {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+        white-space: nowrap;
+        margin-top: 2px;
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 24px;
+        background: var(--surface2);
+        border: 1px solid var(--admin-border);
+        color: var(--admin);
+        padding: 10px 18px;
+        border-radius: var(--radius);
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(6px);
+        transition: all 0.22s;
+        z-index: 999;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* SCROLLBAR */
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+          height: auto;
+        }
+        .g4 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .g2,
+        .g3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-mark">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#000"
+              stroke-width="2.5"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <div>
+            <div class="logo-name">Proficere</div>
+            <div class="logo-tag">Admin</div>
+          </div>
+        </div>
+
+        <div class="admin-id">
+          <div class="admin-av">AD</div>
+          <div>
+            <div class="admin-name">Administrador</div>
+            <div class="admin-role">ACESSO TOTAL</div>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-section-label">Sistema</div>
+          <div class="nav-item active" onclick="showView('dashboard', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+          </div>
+
+          <div class="nav-section-label" style="margin-top: 8px">Cadastros</div>
+          <div class="nav-item" onclick="showView('cursos', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              />
+            </svg>
+            Cursos e Turmas
+            <span class="nav-count">4</span>
+          </div>
+          <div class="nav-item" onclick="showView('competencias', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Competências
+            <span class="nav-count">10</span>
+          </div>
+          <div class="nav-item" onclick="showView('usuarios', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Usuários
+            <span class="nav-count">38</span>
+          </div>
+          <div class="nav-item" onclick="showView('vinculos', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+              />
+              <path
+                d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+              />
+            </svg>
+            Vínculos Prof–Turma
+          </div>
+
+          <div class="nav-section-label" style="margin-top: 8px">Dados</div>
+          <div class="nav-item" onclick="showView('importar', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Importar Alunos
+          </div>
+          <div class="nav-item" onclick="showView('exportar', this)">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Exportar Dados
+          </div>
+        </div>
+
+        <div class="sys-status">
+          <div class="ss-title">Status do sistema</div>
+          <div class="ss-row">
+            <div class="ss-dot" style="background: var(--green)"></div>
+            <span class="ss-label">API</span><span class="ss-val">online</span>
+          </div>
+          <div class="ss-row">
+            <div class="ss-dot" style="background: var(--green)"></div>
+            <span class="ss-label">Banco de dados</span
+            ><span class="ss-val">ok</span>
+          </div>
+          <div class="ss-row">
+            <div class="ss-dot" style="background: var(--admin)"></div>
+            <span class="ss-label">Backup</span
+            ><span class="ss-val">há 3h</span>
+          </div>
+          <div class="ss-row">
+            <div class="ss-dot" style="background: var(--green)"></div>
+            <span class="ss-label">Versão</span
+            ><span class="ss-val">1.0.0</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <!-- ── DASHBOARD ── -->
+        <div class="view active" id="view-dashboard">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Dashboard Administrativo</h1>
+              <p>Proficere · período 2026.1</p>
+            </div>
+          </div>
+          <div class="g4">
+            <div class="kpi" style="--kc: var(--admin)">
+              <div class="kpi-label">Cursos ativos</div>
+              <div class="kpi-value">3</div>
+              <div class="kpi-sub">Enfermagem, Psico, ADS</div>
+            </div>
+            <div class="kpi" style="--kc: var(--blue)">
+              <div class="kpi-label">Alunos cadastrados</div>
+              <div class="kpi-value">312</div>
+              <div class="kpi-sub">+28 este período</div>
+            </div>
+            <div class="kpi" style="--kc: var(--green)">
+              <div class="kpi-label">Usuários ativos</div>
+              <div class="kpi-value">38</div>
+              <div class="kpi-sub">6 profs · 2 coords · 30 alunos</div>
+            </div>
+            <div class="kpi" style="--kc: var(--red)">
+              <div class="kpi-label">Avisos</div>
+              <div class="kpi-value" style="color: var(--red)">2</div>
+              <div class="kpi-sub">Usuários sem acesso</div>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Resumo de cadastros</span>
+              </div>
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Entidade</th>
+                    <th>Total</th>
+                    <th>Ativos</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tbl-name">Cursos</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td><span class="badge b-green">ok</span></td>
+                  </tr>
+                  <tr>
+                    <td class="tbl-name">Turmas</td>
+                    <td>9</td>
+                    <td>7</td>
+                    <td><span class="badge b-green">ok</span></td>
+                  </tr>
+                  <tr>
+                    <td class="tbl-name">Competências</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td><span class="badge b-green">ok</span></td>
+                  </tr>
+                  <tr>
+                    <td class="tbl-name">Professores</td>
+                    <td>6</td>
+                    <td>6</td>
+                    <td><span class="badge b-green">ok</span></td>
+                  </tr>
+                  <tr>
+                    <td class="tbl-name">Vínculos prof–turma</td>
+                    <td>14</td>
+                    <td>14</td>
+                    <td><span class="badge b-amber">revisar</span></td>
+                  </tr>
+                  <tr>
+                    <td class="tbl-name">Alunos importados</td>
+                    <td>312</td>
+                    <td>298</td>
+                    <td><span class="badge b-red">14 pendentes</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Log de atividade</span
+                ><span class="card-tag">últimas ações</span>
+              </div>
+              <div class="log-list" id="log-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CURSOS E TURMAS ── -->
+        <div class="view" id="view-cursos">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Cursos e Turmas</h1>
+              <p>Estrutura acadêmica do sistema</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn admin" onclick="openModal('nova-turma')">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Nova turma
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Cursos cadastrados</span
+              ><span class="card-tag">3 cursos</span>
+            </div>
+            <table class="tbl" id="cursos-tbl">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Turmas</th>
+                  <th>Alunos</th>
+                  <th>Período atual</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="cursos-tbody"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Todas as turmas</span
+              ><span class="card-tag" id="turmas-count">—</span>
+            </div>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Turma</th>
+                  <th>Curso</th>
+                  <th>Período</th>
+                  <th>Alunos</th>
+                  <th>Professor ref.</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="turmas-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── COMPETÊNCIAS ── -->
+        <div class="view" id="view-competencias">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Competências</h1>
+              <p>Estrutura curricular por competências</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn admin" onclick="openModal('nova-comp')">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Nova competência
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Competências cadastradas</span
+              ><span class="card-tag">10 competências · DCN Enfermagem</span>
+            </div>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Competência</th>
+                  <th>Domínio</th>
+                  <th>Níveis</th>
+                  <th>Cursos</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="comp-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── USUÁRIOS ── -->
+        <div class="view" id="view-usuarios">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Usuários</h1>
+              <p>Professores, coordenadores e alunos do sistema</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn admin" onclick="openModal('novo-user')">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Novo usuário
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Todos os usuários</span
+              ><span class="card-tag" id="users-count">—</span>
+            </div>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Papel</th>
+                  <th>Curso / Turma</th>
+                  <th>Último acesso</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── VÍNCULOS ── -->
+        <div class="view" id="view-vinculos">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Vínculos Professor–Turma</h1>
+              <p>Defina quem avalia quem</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn admin" onclick="salvarVinculos()">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Salvar vínculos
+              </button>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Selecionar professor</span>
+              </div>
+              <div
+                id="prof-select-list"
+                style="display: flex; flex-direction: column; gap: 4px"
+              ></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Turmas vinculadas</span
+                ><span class="card-tag" id="vinculo-prof-nome"
+                  >selecione um professor</span
+                >
+              </div>
+              <div
+                id="turmas-vinculo-list"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  color: var(--text3);
+                  font-size: 12px;
+                  padding: 8px 0;
+                "
+              ></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Mapa de vínculos atual</span
+              ><span class="card-tag">todos os professores</span>
+            </div>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Professor</th>
+                  <th>Turmas vinculadas</th>
+                  <th>Alunos total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="vinculos-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── IMPORTAR ── -->
+        <div class="view" id="view-importar">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Importar Alunos</h1>
+              <p>Importe via CSV ou manualmente</p>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Upload CSV</span
+                ><span class="card-tag">formato padrão</span>
+              </div>
+              <div
+                style="
+                  border: 1.5px dashed var(--border2);
+                  border-radius: var(--radius-sm);
+                  padding: 32px;
+                  text-align: center;
+                  cursor: pointer;
+                  transition: all var(--tr);
+                "
+                onmouseover="this.style.borderColor = 'var(--admin)'"
+                onmouseout="this.style.borderColor = 'var(--border2)'"
+                onclick="simularImport()"
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--text3)"
+                  stroke-width="1.5"
+                  style="margin: 0 auto 10px; display: block"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                <div
+                  style="
+                    font-size: 13px;
+                    color: var(--text2);
+                    margin-bottom: 4px;
+                  "
+                >
+                  Arraste o CSV ou clique para selecionar
+                </div>
+                <div style="font-size: 11px; color: var(--text3)">
+                  Colunas esperadas: nome, matrícula, email, turma, período
+                </div>
+              </div>
+              <div style="margin-top: 14px">
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    color: var(--text3);
+                    margin-bottom: 8px;
+                  "
+                >
+                  Formato esperado (CSV)
+                </div>
+                <div
+                  style="
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 11px;
+                    color: var(--text2);
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius-sm);
+                    padding: 10px;
+                    line-height: 1.8;
+                  "
+                >
+                  nome,matricula,email,turma,periodo<br />
+                  Mariana Oliveira,ENF-2023-047,m.oliveira@mail.br,5A,5<br />
+                  Rafael Costa,ENF-2023-012,r.costa@mail.br,5A,5
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Cadastro manual</span>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Nome completo</div>
+                <input
+                  class="form-input"
+                  placeholder="Ex: Mariana Oliveira da Silva"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <div class="form-label">Matrícula</div>
+                  <input class="form-input" placeholder="ENF-2023-000" />
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Período</div>
+                  <select class="form-input">
+                    <option>1º</option>
+                    <option>2º</option>
+                    <option>3º</option>
+                    <option>4º</option>
+                    <option selected>5º</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">E-mail institucional</div>
+                <input
+                  class="form-input"
+                  type="email"
+                  placeholder="aluno@mail.br"
+                />
+              </div>
+              <div class="form-group">
+                <div class="form-label">Turma</div>
+                <select class="form-input">
+                  <option>Enfermagem 5A</option>
+                  <option>Enfermagem 3B</option>
+                  <option>Enfermagem 1C</option>
+                  <option>Psicologia 4A</option>
+                </select>
+              </div>
+              <button
+                class="btn admin"
+                style="width: 100%; justify-content: center; margin-top: 4px"
+                onclick="mostrarToast('✓ Aluno cadastrado com sucesso')"
+              >
+                Cadastrar aluno
+              </button>
+            </div>
+          </div>
+          <div class="card" id="import-preview" style="display: none">
+            <div class="card-header">
+              <span class="card-title">Prévia da importação</span
+              ><span class="card-tag" id="import-count">—</span>
+            </div>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Matrícula</th>
+                  <th>E-mail</th>
+                  <th>Turma</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="import-tbody"></tbody>
+            </table>
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 14px;
+              "
+            >
+              <button
+                class="btn"
+                onclick="
+                  document.getElementById('import-preview').style.display =
+                    'none'
+                "
+              >
+                Cancelar
+              </button>
+              <button class="btn admin" onclick="confirmarImport()">
+                Confirmar importação
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EXPORTAR ── -->
+        <div class="view" id="view-exportar">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Exportar Dados</h1>
+              <p>Relatórios e extrações do sistema</p>
+            </div>
+          </div>
+          <div class="g3" id="export-cards"></div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Exportação customizada</span>
+            </div>
+            <div class="g2">
+              <div>
+                <div class="form-group">
+                  <div class="form-label">Tipo de dados</div>
+                  <select class="form-input">
+                    <option>Avaliações por competência</option>
+                    <option>Portfólio por aluno</option>
+                    <option>Resumo de turma</option>
+                    <option>Atividade de professores</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <div class="form-label">Curso</div>
+                    <select class="form-input">
+                      <option>Enfermagem</option>
+                      <option>Psicologia</option>
+                      <option>ADS</option>
+                      <option>Todos</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <div class="form-label">Período letivo</div>
+                    <select class="form-input">
+                      <option>2026.1</option>
+                      <option>2025.2</option>
+                      <option>2025.1</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="form-group">
+                  <div class="form-label">Formato de saída</div>
+                  <select class="form-input">
+                    <option>CSV</option>
+                    <option>Excel (.xlsx)</option>
+                    <option>PDF</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Filtro de turma</div>
+                  <select class="form-input">
+                    <option>Todas as turmas</option>
+                    <option>Enfermagem 5A</option>
+                    <option>Enfermagem 3B</option>
+                  </select>
+                </div>
+                <button
+                  class="btn admin"
+                  style="width: 100%; justify-content: center; margin-top: 8px"
+                  onclick="mostrarToast('⬇ Arquivo gerado e baixando...')"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Gerar exportação
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- MODAL -->
+    <div
+      class="modal-overlay"
+      id="modal-overlay"
+      onclick="if (event.target === this) closeModal();"
+    >
+      <div class="modal" id="modal-box">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-title">—</div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ── DADOS ──────────────────────────────────────
+      const CURSOS = [
+        {
+          id: 1,
+          nome: 'Enfermagem',
+          turmas: 4,
+          alunos: 130,
+          periodo: '2026.1',
+          status: 'ativo',
+        },
+        {
+          id: 2,
+          nome: 'Psicologia',
+          turmas: 3,
+          alunos: 110,
+          periodo: '2026.1',
+          status: 'ativo',
+        },
+        {
+          id: 3,
+          nome: 'Análise e Des. Sistemas',
+          turmas: 2,
+          alunos: 72,
+          periodo: '2026.1',
+          status: 'ativo',
+        },
+      ];
+
+      const TURMAS = [
+        {
+          id: 1,
+          nome: 'Enfermagem 5A',
+          curso: 'Enfermagem',
+          periodo: '5º',
+          alunos: 28,
+          prof: 'Profa. Karin Mendes',
+          status: 'ativo',
+        },
+        {
+          id: 2,
+          nome: 'Enfermagem 3B',
+          curso: 'Enfermagem',
+          periodo: '3º',
+          alunos: 32,
+          prof: 'Prof. Renato Alves',
+          status: 'ativo',
+        },
+        {
+          id: 3,
+          nome: 'Enfermagem 1C',
+          curso: 'Enfermagem',
+          periodo: '1º',
+          alunos: 38,
+          prof: 'Profa. Sandra Luz',
+          status: 'ativo',
+        },
+        {
+          id: 4,
+          nome: 'Psicologia 4A',
+          curso: 'Psicologia',
+          periodo: '4º',
+          alunos: 22,
+          prof: 'Prof. Bruno Ferreira',
+          status: 'ativo',
+        },
+        {
+          id: 5,
+          nome: 'Psicologia 2B',
+          curso: 'Psicologia',
+          periodo: '2º',
+          alunos: 30,
+          prof: 'Profa. Ana Carvalho',
+          status: 'ativo',
+        },
+        {
+          id: 6,
+          nome: 'ADS 3A',
+          curso: 'ADS',
+          periodo: '3º',
+          alunos: 36,
+          prof: 'Prof. Diego Castro',
+          status: 'inativo',
+        },
+      ];
+
+      const COMPETENCIAS = [
+        {
+          id: 1,
+          nome: 'Avaliação clínica e exame físico',
+          dominio: 'Cuidado clínico',
+          niveis: 5,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 2,
+          nome: 'Administração de medicamentos',
+          dominio: 'Cuidado clínico',
+          niveis: 5,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 3,
+          nome: 'Cuidados com feridas / curativos',
+          dominio: 'Cuidado clínico',
+          niveis: 4,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 4,
+          nome: 'Comunicação com paciente e família',
+          dominio: 'Comunicação',
+          niveis: 4,
+          cursos: 'Enfermagem, Psicologia',
+        },
+        {
+          id: 5,
+          nome: 'Documentação e registros',
+          dominio: 'Comunicação',
+          niveis: 3,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 6,
+          nome: 'Suporte básico de vida (RCP)',
+          dominio: 'Tomada de decisão',
+          niveis: 5,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 7,
+          nome: 'Raciocínio clínico / decisão',
+          dominio: 'Tomada de decisão',
+          niveis: 5,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 8,
+          nome: 'Ética e humanização do cuidado',
+          dominio: 'Ética profissional',
+          niveis: 3,
+          cursos: 'Enfermagem, Psicologia',
+        },
+        {
+          id: 9,
+          nome: 'Ensino e educação em saúde',
+          dominio: 'Educação',
+          niveis: 3,
+          cursos: 'Enfermagem',
+        },
+        {
+          id: 10,
+          nome: 'Gestão do processo de trabalho',
+          dominio: 'Gestão',
+          niveis: 4,
+          cursos: 'Enfermagem',
+        },
+      ];
+
+      const USUARIOS = [
+        {
+          nome: 'Profa. Karin Mendes',
+          email: 'k.mendes@mail.br',
+          papel: 'professor',
+          local: 'Enfermagem 5A',
+          acesso: 'hoje',
+          status: 'ativo',
+        },
+        {
+          nome: 'Prof. Renato Alves',
+          email: 'r.alves@mail.br',
+          papel: 'professor',
+          local: 'Enfermagem 3B',
+          acesso: 'ontem',
+          status: 'ativo',
+        },
+        {
+          nome: 'Profa. Sandra Luz',
+          email: 's.luz@mail.br',
+          papel: 'professor',
+          local: 'Enfermagem 1C',
+          acesso: 'há 3 dias',
+          status: 'ativo',
+        },
+        {
+          nome: 'Prof. Bruno Ferreira',
+          email: 'b.ferreira@mail.br',
+          papel: 'professor',
+          local: 'Psicologia 4A',
+          acesso: 'hoje',
+          status: 'ativo',
+        },
+        {
+          nome: 'Profa. Elaine Lima',
+          email: 'e.lima@mail.br',
+          papel: 'coordenador',
+          local: 'Enfermagem',
+          acesso: 'hoje',
+          status: 'ativo',
+        },
+        {
+          nome: 'Prof. Bruno (Coord)',
+          email: 'b.coord@mail.br',
+          papel: 'coordenador',
+          local: 'Psicologia',
+          acesso: 'há 2 dias',
+          status: 'ativo',
+        },
+        {
+          nome: 'Mariana Oliveira',
+          email: 'm.oliveira@mail.br',
+          papel: 'aluno',
+          local: 'Enf 5A',
+          acesso: 'hoje',
+          status: 'ativo',
+        },
+        {
+          nome: 'Rafael Costa',
+          email: 'r.costa@mail.br',
+          papel: 'aluno',
+          local: 'Enf 5A',
+          acesso: 'há 5 dias',
+          status: 'pendente',
+        },
+        {
+          nome: 'Lucas Ferreira',
+          email: 'l.ferreira@mail.br',
+          papel: 'aluno',
+          local: 'Enf 5A',
+          acesso: 'nunca',
+          status: 'inativo',
+        },
+      ];
+
+      const PROFESSORES_V = [
+        {
+          id: 1,
+          nome: 'Profa. Karin Mendes',
+          cor: '#00c8a0',
+          turmasVinc: [0, 1],
+        },
+        {
+          id: 2,
+          nome: 'Prof. Renato Alves',
+          cor: '#3b82f6',
+          turmasVinc: [1, 2],
+        },
+        { id: 3, nome: 'Profa. Sandra Luz', cor: '#b06bff', turmasVinc: [2] },
+        {
+          id: 4,
+          nome: 'Prof. Bruno Ferreira',
+          cor: '#f59e0b',
+          turmasVinc: [3],
+        },
+        { id: 5, nome: 'Profa. Ana Carvalho', cor: '#ef4444', turmasVinc: [4] },
+        { id: 6, nome: 'Prof. Diego Castro', cor: '#6b7280', turmasVinc: [] },
+      ];
+
+      const LOG = [
+        {
+          acao: 'Competência <strong>Suporte básico de vida</strong> cadastrada',
+          tempo: 'há 10 min',
+          cor: '#22c55e',
+        },
+        {
+          acao: 'Turma <strong>ADS 3A</strong> desativada',
+          tempo: 'há 1h',
+          cor: '#ef4444',
+        },
+        {
+          acao: '28 alunos importados via CSV — <strong>Enfermagem 5A</strong>',
+          tempo: 'há 2h',
+          cor: '#f59e0b',
+        },
+        {
+          acao: 'Vínculo atualizado: <strong>Profa. Karin → Enf 3B</strong>',
+          tempo: 'há 3h',
+          cor: '#3b82f6',
+        },
+        {
+          acao: 'Usuário <strong>Lucas Ferreira</strong> marcado como inativo',
+          tempo: 'ontem',
+          cor: '#ef4444',
+        },
+        {
+          acao: 'Exportação de dados solicitada — <strong>período 2026.1</strong>',
+          tempo: 'ontem',
+          cor: '#a1a1aa',
+        },
+      ];
+
+      const EXPORT_CARDS = [
+        {
+          nome: 'Portfólios de alunos',
+          desc: 'Todos os portfólios do período atual em PDF',
+          icon: '#22c55e',
+          ext: 'PDF',
+        },
+        {
+          nome: 'Avaliações por turma',
+          desc: 'Planilha com todas as avaliações e notas',
+          icon: '#3b82f6',
+          ext: 'CSV',
+        },
+        {
+          nome: 'Relatório de competências',
+          desc: 'Cobertura de competências por curso',
+          icon: '#f59e0b',
+          ext: 'Excel',
+        },
+        {
+          nome: 'Atividade de professores',
+          desc: 'Registros e frequência de avaliação',
+          icon: '#b06bff',
+          ext: 'CSV',
+        },
+        {
+          nome: 'Histórico completo',
+          desc: 'Exportação total da base de dados',
+          icon: '#ef4444',
+          ext: 'CSV',
+        },
+        {
+          nome: 'Relatório para OSCE/Banca',
+          desc: 'Formato padronizado para avaliação externa',
+          icon: '#6b7280',
+          ext: 'PDF',
+        },
+      ];
+
+      let selectedProfV = null;
+      let vincState = {};
+
+      // ── INIT VINC STATE ──
+      PROFESSORES_V.forEach((p) => {
+        vincState[p.id] = [...p.turmasVinc];
+      });
+
+      // ── NAV ─────────────────────────────────────────
+      function showView(name, el) {
+        document
+          .querySelectorAll('.view')
+          .forEach((v) => v.classList.remove('active'));
+        document.getElementById('view-' + name).classList.add('active');
+        document
+          .querySelectorAll('.nav-item')
+          .forEach((n) => n.classList.remove('active'));
+        if (el) el.classList.add('active');
+        if (name === 'cursos') renderCursos();
+        if (name === 'competencias') renderCompetencias();
+        if (name === 'usuarios') renderUsuarios();
+        if (name === 'vinculos') renderVinculos();
+        if (name === 'exportar') renderExportar();
+        if (name === 'dashboard') renderLog();
+      }
+
+      // ── LOG ──────────────────────────────────────────
+      function renderLog() {
+        document.getElementById('log-list').innerHTML = LOG.map(
+          (l) => `
+    <div class="log-item">
+      <div class="log-dot" style="background:${l.cor}"></div>
+      <div class="log-text">${l.acao}</div>
+      <div class="log-time">${l.tempo}</div>
+    </div>`,
+        ).join('');
+      }
+
+      // ── CURSOS ───────────────────────────────────────
+      function renderCursos() {
+        document.getElementById('cursos-tbody').innerHTML = CURSOS.map(
+          (c) => `
+    <tr>
+      <td class="tbl-name">${c.nome}</td>
+      <td>${c.turmas}</td>
+      <td>${c.alunos}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${c.periodo}</td>
+      <td><span class="badge b-green">ativo</span></td>
+      <td><div style="display:flex;gap:5px">
+        <button class="icon-btn" onclick="mostrarToast('Editando curso '+${c.id})">✎ Editar</button>
+      </div></td>
+    </tr>`,
+        ).join('');
+
+        document.getElementById('turmas-count').textContent =
+          `${TURMAS.length} turmas`;
+        document.getElementById('turmas-tbody').innerHTML = TURMAS.map(
+          (t) => `
+    <tr>
+      <td class="tbl-name">${t.nome}</td>
+      <td>${t.curso}</td>
+      <td>${t.periodo}</td>
+      <td>${t.alunos}</td>
+      <td style="font-size:11px;color:var(--text2)">${t.prof}</td>
+      <td><span class="badge ${t.status === 'ativo' ? 'b-green' : 'b-gray'}">${t.status}</span></td>
+      <td><div style="display:flex;gap:5px">
+        <button class="icon-btn" onclick="mostrarToast('Editando: ${t.nome}')">✎</button>
+        <button class="icon-btn del" onclick="mostrarToast('Turma excluída')">✕</button>
+      </div></td>
+    </tr>`,
+        ).join('');
+      }
+
+      // ── COMPETÊNCIAS ─────────────────────────────────
+      function renderCompetencias() {
+        document.getElementById('comp-tbody').innerHTML = COMPETENCIAS.map(
+          (c, i) => `
+    <tr>
+      <td style="color:var(--text3);font-family:'JetBrains Mono',monospace">${String(i + 1).padStart(2, '0')}</td>
+      <td class="tbl-name">${c.nome}</td>
+      <td><span class="badge b-blue" style="font-size:9px">${c.dominio}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;color:var(--admin)">${c.niveis} níveis</td>
+      <td style="font-size:11px;color:var(--text2)">${c.cursos}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="icon-btn" onclick="mostrarToast('Editando competência')">✎</button>
+        <button class="icon-btn del" onclick="mostrarToast('Competência removida')">✕</button>
+      </div></td>
+    </tr>`,
+        ).join('');
+      }
+
+      // ── USUÁRIOS ─────────────────────────────────────
+      const PAPEL_BADGE = {
+        professor: 'b-blue',
+        coordenador: 'b-amber',
+        aluno: 'b-gray',
+      };
+      const STATUS_BADGE = {
+        ativo: 'b-green',
+        pendente: 'b-amber',
+        inativo: 'b-red',
+      };
+
+      function renderUsuarios() {
+        document.getElementById('users-count').textContent =
+          `${USUARIOS.length} usuários`;
+        document.getElementById('users-tbody').innerHTML = USUARIOS.map(
+          (u) => `
+    <tr>
+      <td class="tbl-name">${u.nome}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">${u.email}</td>
+      <td><span class="badge ${PAPEL_BADGE[u.papel] || 'b-gray'}">${u.papel}</span></td>
+      <td style="font-size:11px;color:var(--text2)">${u.local}</td>
+      <td style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${u.acesso}</td>
+      <td><span class="badge ${STATUS_BADGE[u.status] || 'b-gray'}">${u.status}</span></td>
+      <td><div style="display:flex;gap:5px">
+        <button class="icon-btn" onclick="mostrarToast('Editando usuário')">✎</button>
+        <button class="icon-btn del" onclick="mostrarToast('Usuário desativado')">✕</button>
+      </div></td>
+    </tr>`,
+        ).join('');
+      }
+
+      // ── VÍNCULOS ─────────────────────────────────────
+      function renderVinculos() {
+        document.getElementById('prof-select-list').innerHTML =
+          PROFESSORES_V.map(
+            (p) => `
+    <div class="vinculo-item${selectedProfV === p.id ? ' linked' : ''}" onclick="selecionarProf(${p.id})">
+      <div class="vi-dot" style="background:${p.cor}"></div>
+      <div class="vi-name">${p.nome}</div>
+      <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${vincState[p.id].length} turmas</div>
+      ${selectedProfV === p.id ? '<div class="vi-check">→</div>' : ''}
+    </div>`,
+          ).join('');
+
+        renderVinculosMapa();
+      }
+
+      function selecionarProf(id) {
+        selectedProfV = id;
+        renderVinculos();
+        const p = PROFESSORES_V.find((x) => x.id === id);
+        document.getElementById('vinculo-prof-nome').textContent = p.nome;
+        document.getElementById('turmas-vinculo-list').innerHTML = TURMAS.map(
+          (t, i) => {
+            const linked = vincState[id].includes(i);
+            return `<div class="vinculo-item${linked ? ' linked' : ''}" onclick="toggleVinculo(${id},${i})">
+      <div class="vi-dot" style="background:${linked ? p.cor : 'var(--border2)'}"></div>
+      <div class="vi-name">${t.nome}</div>
+      <div style="font-size:11px;color:var(--text3)">${t.periodo} · ${t.alunos} alunos</div>
+      ${linked ? `<div class="vi-check" style="color:${p.cor}">✓</div>` : ''}
+    </div>`;
+          },
+        ).join('');
+      }
+
+      function toggleVinculo(profId, turmaIdx) {
+        const arr = vincState[profId];
+        const i = arr.indexOf(turmaIdx);
+        if (i > -1) arr.splice(i, 1);
+        else arr.push(turmaIdx);
+        selecionarProf(profId);
+      }
+
+      function renderVinculosMapa() {
+        document.getElementById('vinculos-tbody').innerHTML = PROFESSORES_V.map(
+          (p) => `
+    <tr>
+      <td class="tbl-name" style="color:${p.cor}">${p.nome}</td>
+      <td style="font-size:12px">${vincState[p.id].map((i) => TURMAS[i]?.nome || '—').join(' · ') || '<span style="color:var(--text3)">nenhuma</span>'}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${vincState[p.id].reduce((s, i) => s + (TURMAS[i]?.alunos || 0), 0)}</td>
+      <td><span class="badge ${vincState[p.id].length > 0 ? 'b-green' : 'b-red'}">${vincState[p.id].length > 0 ? 'vinculado' : 'sem turma'}</span></td>
+    </tr>`,
+        ).join('');
+      }
+
+      function salvarVinculos() {
+        renderVinculosMapa();
+        mostrarToast('✓ Vínculos salvos com sucesso');
+      }
+
+      // ── EXPORTAR ─────────────────────────────────────
+      function renderExportar() {
+        document.getElementById('export-cards').innerHTML = EXPORT_CARDS.map(
+          (e) => `
+    <div class="export-card" onclick="mostrarToast('⬇ Gerando: ${e.nome}...')">
+      <div class="export-icon" style="background:${e.icon}22;border:1px solid ${e.icon}33">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${e.icon}" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div>
+        <div class="export-name">${e.nome}</div>
+        <div class="export-desc">${e.desc} <span style="color:${e.icon};font-size:10px;font-family:'JetBrains Mono',monospace">.${e.ext}</span></div>
+      </div>
+      <div class="export-arrow">↓</div>
+    </div>`,
+        ).join('');
+      }
+
+      // ── IMPORTAR SIMULADO ────────────────────────────
+      function simularImport() {
+        const preview = [
+          {
+            nome: 'Ana Beatriz Lima',
+            mat: 'ENF-2023-091',
+            email: 'a.lima@mail.br',
+            turma: 'Enf 5A',
+            status: 'novo',
+          },
+          {
+            nome: 'Carlos Eduardo Mota',
+            mat: 'ENF-2023-092',
+            email: 'c.mota@mail.br',
+            turma: 'Enf 5A',
+            status: 'novo',
+          },
+          {
+            nome: 'Mariana Oliveira',
+            mat: 'ENF-2023-047',
+            email: 'm.oliveira@mail.br',
+            turma: 'Enf 5A',
+            status: 'duplicado',
+          },
+          {
+            nome: 'Fernanda Roque',
+            mat: 'ENF-2023-093',
+            email: 'f.roque@mail.br',
+            turma: 'Enf 3B',
+            status: 'novo',
+          },
+        ];
+        document.getElementById('import-count').textContent =
+          `${preview.length} registros encontrados`;
+        document.getElementById('import-tbody').innerHTML = preview
+          .map(
+            (r) => `
+    <tr>
+      <td class="tbl-name">${r.nome}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${r.mat}</td>
+      <td style="font-size:11px;color:var(--text2)">${r.email}</td>
+      <td>${r.turma}</td>
+      <td><span class="badge ${r.status === 'novo' ? 'b-green' : 'b-amber'}">${r.status}</span></td>
+    </tr>`,
+          )
+          .join('');
+        document.getElementById('import-preview').style.display = 'block';
+      }
+
+      function confirmarImport() {
+        document.getElementById('import-preview').style.display = 'none';
+        mostrarToast('✓ 3 alunos importados. 1 duplicata ignorada.');
+      }
+
+      // ── MODALS ───────────────────────────────────────
+      const MODALS = {
+        'nova-turma': {
+          title: 'Nova Turma',
+          body: `
+      <div class="form-group"><div class="form-label">Nome da turma</div><input class="form-input" placeholder="Ex: Enfermagem 5B"></div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">Curso</div>
+          <select class="form-input"><option>Enfermagem</option><option>Psicologia</option><option>ADS</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">Período</div>
+          <select class="form-input"><option>1º</option><option>2º</option><option>3º</option><option>4º</option><option>5º</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">Ano letivo</div><input class="form-input" value="2026.1"></div>
+        <div class="form-group"><div class="form-label">Capacidade</div><input class="form-input" type="number" value="35"></div>
+      </div>`,
+        },
+        'nova-comp': {
+          title: 'Nova Competência',
+          body: `
+      <div class="form-group"><div class="form-label">Nome da competência</div><input class="form-input" placeholder="Ex: Avaliação neurológica básica"></div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">Domínio</div>
+          <select class="form-input"><option>Cuidado clínico</option><option>Comunicação</option><option>Tomada de decisão</option><option>Ética profissional</option><option>Educação</option><option>Gestão</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">Cursos</div>
+          <select class="form-input"><option>Enfermagem</option><option>Psicologia</option><option>Ambos</option></select>
+        </div>
+      </div>
+      <div class="form-group"><div class="form-label">Número de níveis de entrustment</div>
+        <div class="level-pills">
+          <span class="lp" onclick="toggleLP(this)">3</span>
+          <span class="lp sel" onclick="toggleLP(this)">4</span>
+          <span class="lp" onclick="toggleLP(this)">5</span>
+        </div>
+      </div>
+      <div class="form-group"><div class="form-label">Descrição / referência</div>
+        <textarea class="form-input" style="min-height:70px;resize:vertical" placeholder="Baseado na DCN de Enfermagem — Art. 5º, inciso III..."></textarea>
+      </div>`,
+        },
+        'novo-user': {
+          title: 'Novo Usuário',
+          body: `
+      <div class="form-group"><div class="form-label">Nome completo</div><input class="form-input" placeholder="Nome do usuário"></div>
+      <div class="form-group"><div class="form-label">E-mail institucional</div><input class="form-input" type="email" placeholder="usuario@mail.br"></div>
+      <div class="form-row">
+        <div class="form-group"><div class="form-label">Papel</div>
+          <select class="form-input"><option>professor</option><option>coordenador</option><option>aluno</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">Curso / Turma</div>
+          <select class="form-input"><option>Enfermagem 5A</option><option>Enfermagem 3B</option><option>Psicologia 4A</option></select>
+        </div>
+      </div>`,
+        },
+      };
+
+      function openModal(key) {
+        const m = MODALS[key];
+        if (!m) return;
+        document.getElementById('modal-title').textContent = m.title;
+        document.getElementById('modal-body').innerHTML =
+          m.body +
+          `
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn admin" onclick="closeModal();mostrarToast('✓ Salvo com sucesso')">Salvar</button>
+    </div>`;
+        document.getElementById('modal-overlay').classList.add('open');
+      }
+      function closeModal() {
+        document.getElementById('modal-overlay').classList.remove('open');
+      }
+
+      function toggleLP(el) {
+        el.closest('.level-pills')
+          .querySelectorAll('.lp')
+          .forEach((x) => x.classList.remove('sel'));
+        el.classList.add('sel');
+      }
+
+      // ── TOAST ────────────────────────────────────────
+      function mostrarToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerHTML = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2600);
+      }
+
+      // ── INIT ────────────────────────────────────────
+      renderLog();
+    </script>
+  </body>
+</html>

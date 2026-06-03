@@ -1,0 +1,1402 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proficere — Avaliação por Competências na Saúde</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --surface: #111820;
+        --surface2: #1a2332;
+        --border: #1f2e42;
+        --border2: #2a3f5a;
+        --text: #e8edf5;
+        --text2: #7a8fa8;
+        --text3: #3d5470;
+        --accent: #00c8a0;
+        --accent2: #0092ff;
+        --accent3: #ff6b6b;
+        --accent4: #f5a623;
+        --accent5: #b06bff;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Syne', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+      }
+
+      /* grain */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.5;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 0 48px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(11, 15, 20, 0.85);
+        border-bottom: 1px solid rgba(31, 46, 66, 0.6);
+        backdrop-filter: blur(12px);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-logo-mark {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-logo-name {
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .nav-link {
+        font-size: 12px;
+        color: var(--text2);
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-decoration: none;
+        border: 1px solid transparent;
+      }
+      .nav-link:hover {
+        color: var(--text);
+        background: var(--surface2);
+      }
+      .nav-cta {
+        font-size: 12px;
+        font-weight: 600;
+        color: #000;
+        background: var(--accent);
+        padding: 7px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .nav-cta:hover {
+        background: #00e0b4;
+        transform: translateY(-1px);
+      }
+
+      /* HERO */
+      .hero {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 100px 24px 80px;
+        overflow: hidden;
+      }
+      .hero-glow {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 900px;
+        height: 500px;
+        background: radial-gradient(
+          ellipse at 50% 0%,
+          rgba(0, 200, 160, 0.12) 0%,
+          rgba(0, 146, 255, 0.06) 40%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(31, 46, 66, 0.18) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 46, 66, 0.18) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          black,
+          transparent
+        );
+        pointer-events: none;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(0, 200, 160, 0.08);
+        border: 1px solid rgba(0, 200, 160, 0.2);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 5px 14px;
+        border-radius: 20px;
+        margin-bottom: 28px;
+        animation: fadeUp 0.6s ease both;
+      }
+      .hero-pulse {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.85);
+        }
+      }
+
+      h1.hero-title {
+        font-size: clamp(44px, 7vw, 80px);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 0.95;
+        margin-bottom: 24px;
+        animation: fadeUp 0.6s 0.1s ease both;
+      }
+      .hero-title span {
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent2) 60%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-sub {
+        font-size: clamp(14px, 2vw, 18px);
+        color: var(--text2);
+        max-width: 560px;
+        line-height: 1.7;
+        margin-bottom: 40px;
+        animation: fadeUp 0.6s 0.2s ease both;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        animation: fadeUp 0.6s 0.3s ease both;
+      }
+      .btn-hero-primary {
+        font-family: 'Syne', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 12px 28px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        letter-spacing: 0.01em;
+      }
+      .btn-hero-primary:hover {
+        background: #00e0b4;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 200, 160, 0.25);
+      }
+      .btn-hero-ghost {
+        font-family: 'Syne', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 12px 24px;
+        border-radius: 8px;
+        background: none;
+        color: var(--text2);
+        border: 1px solid var(--border2);
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+      .btn-hero-ghost:hover {
+        color: var(--text);
+        border-color: var(--text3);
+        background: var(--surface);
+      }
+
+      /* STATS */
+      .hero-stats {
+        display: flex;
+        gap: 0;
+        margin-top: 64px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(17, 24, 32, 0.7);
+        backdrop-filter: blur(8px);
+        overflow: hidden;
+        animation: fadeUp 0.6s 0.4s ease both;
+      }
+      .stat {
+        padding: 18px 32px;
+        text-align: center;
+        position: relative;
+      }
+      .stat + .stat::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 1px;
+        background: var(--border);
+      }
+      .stat-val {
+        font-size: 22px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* SECTION */
+      section {
+        position: relative;
+        z-index: 1;
+        padding: 80px 48px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section-eyebrow {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 12px;
+      }
+      .section-title {
+        font-size: clamp(26px, 4vw, 40px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 14px;
+      }
+      .section-sub {
+        font-size: 15px;
+        color: var(--text2);
+        line-height: 1.7;
+        max-width: 540px;
+      }
+
+      /* PERFIS / CARDS */
+      #perfis {
+        padding-top: 60px;
+      }
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-top: 48px;
+      }
+      .role-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 28px;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .role-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 80% 20%,
+          var(--card-glow, 0) 0%,
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+      .role-card:hover {
+        border-color: var(--card-color);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      }
+      .role-card:hover::before {
+        opacity: 1;
+      }
+
+      .role-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .role-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1.5px solid;
+      }
+      .role-arrow {
+        color: var(--text3);
+        font-size: 18px;
+        transition: transform 0.2s;
+        margin-top: 2px;
+      }
+      .role-card:hover .role-arrow {
+        transform: translate(3px, -3px);
+        color: var(--card-color);
+      }
+
+      .role-tag {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid;
+        margin-bottom: 2px;
+        display: inline-block;
+      }
+      .role-name {
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+      }
+      .role-desc {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+
+      .role-features {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .feat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text2);
+      }
+      .feat-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .role-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        margin-top: auto;
+      }
+      .role-link-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--card-color);
+      }
+      .role-file {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* COMO FUNCIONA */
+      #como {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      #como .inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 48px;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 48px;
+      }
+      .step-card {
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        position: relative;
+      }
+      .step-num {
+        font-size: 10px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text3);
+        letter-spacing: 0.1em;
+        margin-bottom: 14px;
+      }
+      .step-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .step-desc {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+      .step-connector {
+        display: none;
+      }
+
+      /* CONTEXTO */
+      #contexto {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .ctx-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: center;
+        margin-top: 48px;
+      }
+      .ctx-text p {
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.8;
+        margin-bottom: 16px;
+      }
+      .ctx-text strong {
+        color: var(--text);
+      }
+      .ctx-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 24px;
+      }
+      .ctx-tag {
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .ctx-visual {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .ctx-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .ctx-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .ctx-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .ctx-sub {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .ctx-bar-wrap {
+        flex: 1;
+        height: 4px;
+        background: var(--surface2);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .ctx-bar {
+        height: 100%;
+        border-radius: 2px;
+      }
+      .ctx-val {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text2);
+        width: 32px;
+        text-align: right;
+      }
+
+      /* FOOTER */
+      footer {
+        position: relative;
+        z-index: 1;
+        border-top: 1px solid var(--border);
+        padding: 32px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text2);
+      }
+      .footer-note {
+        font-size: 12px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .footer-tag {
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        nav {
+          padding: 0 20px;
+        }
+        section {
+          padding: 60px 20px;
+        }
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+        .steps {
+          grid-template-columns: 1fr;
+        }
+        .ctx-grid {
+          grid-template-columns: 1fr;
+        }
+        .ctx-visual {
+          display: none;
+        }
+        .hero-stats {
+          flex-wrap: wrap;
+        }
+        #como .inner {
+          padding: 60px 20px;
+        }
+        footer {
+          padding: 24px 20px;
+        }
+      }
+      @media (max-width: 600px) {
+        .hero-stats .stat {
+          padding: 14px 20px;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo">
+        <div class="nav-logo-mark">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#000"
+            stroke-width="2.5"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        <span class="nav-logo-name">Proficere</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="#perfis">Perfis</a>
+        <a class="nav-link" href="#como">Como funciona</a>
+        <a class="nav-link" href="#contexto">Contexto</a>
+      </div>
+      <a class="nav-cta" href="#perfis">Ver protótipos →</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-grid"></div>
+
+      <div class="hero-eyebrow">
+        <span class="hero-pulse"></span>
+        Protótipo conceitual ·
+      </div>
+
+      <h1 class="hero-title">
+        Avaliação por<br /><span>competências</span><br />na saúde
+      </h1>
+
+      <p class="hero-sub">
+        Proficere é uma plataforma para registrar, acompanhar e visualizar o
+        desenvolvimento de competências clínicas ao longo da formação — além do
+        número de 0 a 10.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn-hero-primary" href="#perfis">
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          Explorar protótipos
+        </a>
+        <a class="btn-hero-ghost" href="#contexto"> Entender o contexto </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-val">4</div>
+          <div class="stat-label">Perfis de acesso</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">10</div>
+          <div class="stat-label">Competências mapeadas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">4</div>
+          <div class="stat-label">Modalidades de avaliação</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">0</div>
+          <div class="stat-label">Dependências externas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIS -->
+    <section id="perfis">
+      <div class="section-eyebrow">Protótipos navegáveis</div>
+      <div class="section-title">Quatro perspectivas,<br />uma plataforma</div>
+      <p class="section-sub">
+        Cada perfil acessa o sistema de uma forma diferente. Clique em qualquer
+        card para abrir o protótipo correspondente.
+      </p>
+
+      <div class="cards-grid">
+        <!-- ADMIN -->
+        <a
+          class="role-card"
+          href="admin.html"
+          style="
+            --card-color: var(--accent4);
+            --card-glow: rgba(245, 158, 11, 0.08);
+          "
+        >
+          <div class="role-card-top">
+            <div
+              class="role-icon"
+              style="
+                background: rgba(245, 158, 11, 0.1);
+                border-color: rgba(245, 158, 11, 0.25);
+              "
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#f5a623"
+                stroke-width="1.8"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"
+                />
+              </svg>
+            </div>
+            <div class="role-arrow">↗</div>
+          </div>
+          <div>
+            <div
+              class="role-tag"
+              style="
+                color: var(--accent4);
+                background: rgba(245, 158, 11, 0.08);
+                border-color: rgba(245, 158, 11, 0.25);
+              "
+            >
+              Admin
+            </div>
+            <div class="role-name">Administrador</div>
+            <div class="role-desc">
+              Configura a estrutura completa do sistema — cursos, turmas,
+              competências, usuários e vínculos.
+            </div>
+          </div>
+          <div class="role-features">
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent4)"></div>
+              Cadastro de competências e domínios
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent4)"></div>
+              Gestão de usuários e papéis
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent4)"></div>
+              Vínculos professor–turma
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent4)"></div>
+              Importação de alunos via CSV
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent4)"></div>
+              Exportação de relatórios e portfólios
+            </div>
+          </div>
+          <div class="role-footer">
+            <span class="role-link-label">Abrir protótipo →</span>
+            <span class="role-file">admin.html</span>
+          </div>
+        </a>
+
+        <!-- COORDENADOR -->
+        <a
+          class="role-card"
+          href="coordenador.html"
+          style="
+            --card-color: var(--accent5);
+            --card-glow: rgba(176, 107, 255, 0.08);
+          "
+        >
+          <div class="role-card-top">
+            <div
+              class="role-icon"
+              style="
+                background: rgba(176, 107, 255, 0.1);
+                border-color: rgba(176, 107, 255, 0.25);
+              "
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#b06bff"
+                stroke-width="1.8"
+              >
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+            </div>
+            <div class="role-arrow">↗</div>
+          </div>
+          <div>
+            <div
+              class="role-tag"
+              style="
+                color: var(--accent5);
+                background: rgba(176, 107, 255, 0.08);
+                border-color: rgba(176, 107, 255, 0.25);
+              "
+            >
+              Coordenação
+            </div>
+            <div class="role-name">Coordenador de Curso</div>
+            <div class="role-desc">
+              Monitora o progresso da turma, identifica gaps de cobertura e
+              acompanha a atividade dos professores.
+            </div>
+          </div>
+          <div class="role-features">
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent5)"></div>
+              Painel de turma com IC médio e alertas
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent5)"></div>
+              Ranking de alunos mais/menos avaliados
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent5)"></div>
+              Heatmap de cobertura por competência
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent5)"></div>
+              Drawer de perfil individual do aluno
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent5)"></div>
+              Visão de atividade dos professores
+            </div>
+          </div>
+          <div class="role-footer">
+            <span class="role-link-label">Abrir protótipo →</span>
+            <span class="role-file">coordenador.html</span>
+          </div>
+        </a>
+
+        <!-- PROFESSOR -->
+        <a
+          class="role-card"
+          href="professor.html"
+          style="
+            --card-color: var(--accent);
+            --card-glow: rgba(0, 200, 160, 0.08);
+          "
+        >
+          <div class="role-card-top">
+            <div
+              class="role-icon"
+              style="
+                background: rgba(0, 200, 160, 0.1);
+                border-color: rgba(0, 200, 160, 0.25);
+              "
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#00c8a0"
+                stroke-width="1.8"
+              >
+                <path d="M12 20h9" />
+                <path
+                  d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                />
+              </svg>
+            </div>
+            <div class="role-arrow">↗</div>
+          </div>
+          <div>
+            <div
+              class="role-tag"
+              style="
+                color: var(--accent);
+                background: rgba(0, 200, 160, 0.08);
+                border-color: rgba(0, 200, 160, 0.25);
+              "
+            >
+              Professor
+            </div>
+            <div class="role-name">Professor / Preceptor</div>
+            <div class="role-desc">
+              Registra avaliações clínicas diretas, define o nível de
+              entrustment e dá feedback estruturado aos alunos.
+            </div>
+          </div>
+          <div class="role-features">
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent)"></div>
+              Visão da turma com alertas de pendência
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent)"></div>
+              Fluxo de nova avaliação em 3 passos
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent)"></div>
+              Modalidades: OSCE, OSPE, Clínico, Teórica
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent)"></div>
+              Escala de entrustment 1–5 com descritor
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent)"></div>
+              Histórico de todos os registros
+            </div>
+          </div>
+          <div class="role-footer">
+            <span class="role-link-label">Abrir protótipo →</span>
+            <span class="role-file">professor.html</span>
+          </div>
+        </a>
+
+        <!-- ALUNO -->
+        <a
+          class="role-card"
+          href="perfil_aluno.html"
+          style="
+            --card-color: var(--accent2);
+            --card-glow: rgba(0, 146, 255, 0.08);
+          "
+        >
+          <div class="role-card-top">
+            <div
+              class="role-icon"
+              style="
+                background: rgba(0, 146, 255, 0.1);
+                border-color: rgba(0, 146, 255, 0.25);
+              "
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0092ff"
+                stroke-width="1.8"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="role-arrow">↗</div>
+          </div>
+          <div>
+            <div
+              class="role-tag"
+              style="
+                color: var(--accent2);
+                background: rgba(0, 146, 255, 0.08);
+                border-color: rgba(0, 146, 255, 0.25);
+              "
+            >
+              Aluno
+            </div>
+            <div class="role-name">Portfólio do Aluno</div>
+            <div class="role-desc">
+              Acompanha a própria evolução por domínio e período, visualiza
+              feedbacks e o histórico completo de avaliações.
+            </div>
+          </div>
+          <div class="role-features">
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent2)"></div>
+              Radar de competências por domínio
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent2)"></div>
+              Heatmap histórico por período (1º–5º)
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent2)"></div>
+              Linha do tempo de avaliações recebidas
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent2)"></div>
+              Feedbacks completos dos professores
+            </div>
+            <div class="feat">
+              <div class="feat-dot" style="background: var(--accent2)"></div>
+              Gráficos de evolução do entrustment
+            </div>
+          </div>
+          <div class="role-footer">
+            <span class="role-link-label">Abrir protótipo →</span>
+            <span class="role-file">perfil_aluno.html</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <div id="como">
+      <div class="inner">
+        <div class="section-eyebrow">Fluxo do sistema</div>
+        <div class="section-title">Como o Proficere funciona</div>
+        <p class="section-sub">
+          Três momentos que transformam a avaliação qualitativa em dados
+          estruturados e longitudinais.
+        </p>
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-num">01 — Configuração</div>
+            <div class="step-title">Admin estrutura o ambiente</div>
+            <div class="step-desc">
+              Cadastra cursos, turmas e competências baseadas nas DCN. Cria
+              usuários, define papéis e vincula professores às turmas que vão
+              avaliar.
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">02 — Avaliação</div>
+            <div class="step-title">Professor registra a observação</div>
+            <div class="step-desc">
+              No estágio clínico ou após uma simulação, o professor registra a
+              competência observada, o nível de entrustment (1–5) e um feedback
+              textual estruturado.
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">03 — Acompanhamento</div>
+            <div class="step-title">Todos acompanham a evolução</div>
+            <div class="step-desc">
+              O aluno vê seu portfólio evoluindo em tempo real. O coordenador
+              identifica gaps. O sistema gera um histórico longitudinal ao longo
+              de todos os períodos.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEXTO -->
+    <section id="contexto">
+      <div class="section-eyebrow">Por que isso importa</div>
+      <div class="section-title">O problema que<br />o Proficere resolve</div>
+      <div class="ctx-grid">
+        <div class="ctx-text">
+          <p>
+            Os currículos integrados por competências na área da saúde —
+            exigidos pelas
+            <strong>DCN (Diretrizes Curriculares Nacionais)</strong> — demandam
+            um registro que vai além da nota numérica. O aluno precisa
+            demonstrar competências clínicas ao longo da formação, e não apenas
+            em uma prova.
+          </p>
+          <p>
+            Os sistemas acadêmicos existentes foram construídos para o modelo
+            tradicional:
+            <strong>disciplina → nota → aprovado/reprovado</strong>. Eles não
+            conseguem registrar o que um preceptor observou num estágio clínico,
+            nem mostrar se um aluno evoluiu na competência de "comunicação com o
+            paciente" ao longo de 5 períodos.
+          </p>
+          <p>
+            O Proficere é um <strong>protótipo conceitual</strong> desenvolvido
+            para validar se essa demanda existe e como um sistema assim deveria
+            funcionar na prática — antes de qualquer decisão de desenvolvimento
+            ou integração com sistemas existentes.
+          </p>
+          <div class="ctx-tags">
+            <span class="ctx-tag">CBME</span>
+            <span class="ctx-tag">Entrustment Scale</span>
+            <span class="ctx-tag">DCN Enfermagem</span>
+            <span class="ctx-tag">OSCE / OSPE</span>
+            <span class="ctx-tag">Portfólio longitudinal</span>
+            <span class="ctx-tag">Currículo integrado</span>
+          </div>
+        </div>
+        <div class="ctx-visual">
+          <div
+            style="
+              font-size: 10px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.1em;
+              color: var(--text3);
+              margin-bottom: 6px;
+            "
+          >
+            O que o sistema registra
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(0, 200, 160, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#00c8a0"
+                stroke-width="2"
+              >
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Cuidado clínico</div>
+              <div class="ctx-sub">Exame físico, procedimentos, medicação</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 82%; background: #00c8a0"
+              ></div>
+            </div>
+            <div class="ctx-val">82%</div>
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(0, 146, 255, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0092ff"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Comunicação</div>
+              <div class="ctx-sub">Relação com paciente e equipe</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 74%; background: #0092ff"
+              ></div>
+            </div>
+            <div class="ctx-val">74%</div>
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(176, 107, 255, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#b06bff"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Tomada de decisão</div>
+              <div class="ctx-sub">Raciocínio clínico sob pressão</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 68%; background: #b06bff"
+              ></div>
+            </div>
+            <div class="ctx-val">68%</div>
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(245, 166, 35, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#f5a623"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Ética profissional</div>
+              <div class="ctx-sub">Conduta e humanização</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 90%; background: #f5a623"
+              ></div>
+            </div>
+            <div class="ctx-val">90%</div>
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(255, 107, 107, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#ff6b6b"
+                stroke-width="2"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Ensino e educação</div>
+              <div class="ctx-sub">Capacidade de ensinar e orientar</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 61%; background: #ff6b6b"
+              ></div>
+            </div>
+            <div class="ctx-val">61%</div>
+          </div>
+          <div class="ctx-row">
+            <div class="ctx-icon" style="background: rgba(61, 116, 176, 0.1)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#3d7ab0"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 9h6M9 12h6M9 15h4" />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="ctx-label">Gestão</div>
+              <div class="ctx-sub">Processo de trabalho e liderança</div>
+            </div>
+            <div class="ctx-bar-wrap">
+              <div
+                class="ctx-bar"
+                style="width: 20%; background: #3d7ab0"
+              ></div>
+            </div>
+            <div class="ctx-val">20%</div>
+          </div>
+          <div
+            style="
+              margin-top: 12px;
+              padding-top: 12px;
+              border-top: 1px solid var(--border);
+              font-size: 11px;
+              color: var(--text3);
+              font-family: 'JetBrains Mono', monospace;
+            "
+          >
+            Mariana Oliveira · ENF-2023-047 · 5º período
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-logo">
+        <div
+          style="
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#000"
+            stroke-width="2.5"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        Proficere
+      </div>
+      <div class="footer-note">protótipo conceitual · 2026 · html estático</div>
+      <div class="footer-tag">Currículo por Competências</div>
+    </footer>
+  </body>
+</html>

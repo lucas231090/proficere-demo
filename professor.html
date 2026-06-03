@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proficere — Visão do Professor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f14;--surface:#111820;--surface2:#1a2332;--surface3:#1e2a3a;
+  --border:#1f2e42;--border2:#2a3f5a;
+  --text:#e8edf5;--text2:#7a8fa8;--text3:#3d5470;
+  --accent:#00c8a0;--accent2:#0092ff;--accent3:#ff6b6b;--accent4:#f5a623;--accent5:#b06bff;
+  --radius:12px;--radius-sm:7px;--tr:.22s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;position:relative;z-index:1}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:28px 22px;display:flex;flex-direction:column;gap:24px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3)}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.prof-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:center}
+.prof-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1a3a5c,#0d2035);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--accent2);flex-shrink:0}
+.prof-name{font-size:14px;font-weight:600;color:var(--text)}
+.prof-role{font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+.nav-section{display:flex;flex-direction:column;gap:2px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;padding-left:10px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;color:var(--text2);cursor:pointer;transition:all var(--tr);border:1px solid transparent;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(0,200,160,.08);border-color:rgba(0,200,160,.2);color:var(--accent)}
+.nav-item.active svg{opacity:1}
+.nav-item svg{opacity:.6;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:10px;background:rgba(0,200,160,.15);color:var(--accent);padding:2px 7px;border-radius:10px;font-family:'JetBrains Mono',monospace}
+
+.turma-select-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.turma-pill{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;transition:all var(--tr);margin-bottom:6px}
+.turma-pill:hover{border-color:var(--border2);background:var(--surface2)}
+.turma-pill.active{border-color:rgba(0,200,160,.4);background:rgba(0,200,160,.06)}
+.turma-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.turma-nome{font-size:13px;color:var(--text);font-weight:500}
+.turma-sub{font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.turma-count{margin-left:auto;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
+.sf-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.sf-label{font-size:11px;color:var(--text3)}
+.sf-val{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--accent)}
+
+/* ── MAIN ── */
+.main{padding:36px 40px;display:flex;flex-direction:column;gap:24px;min-width:0;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.topbar-left h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.topbar-left p{font-size:13px;color:var(--text2);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.btn-primary{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:9px 20px;border-radius:var(--radius-sm);background:var(--accent);color:#000;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all var(--tr);letter-spacing:.01em}
+.btn-primary:hover{background:#00e0b4;transform:translateY(-1px)}
+.btn-ghost{font-family:'Syne',sans-serif;font-size:13px;padding:9px 18px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:1px solid var(--border2);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all var(--tr)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+
+/* VIEWS */
+.view{display:none;flex-direction:column;gap:20px;animation:fadeUp .3s ease}
+.view.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
+.card-tag{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);font-family:'JetBrains Mono',monospace}
+
+/* GRADE DA TURMA */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* KPI */
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--accent))}
+.kpi-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi-value{font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);line-height:1}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* LISTA DE ALUNOS */
+.aluno-list{display:flex;flex-direction:column;gap:6px}
+.aluno-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all var(--tr)}
+.aluno-row:hover{border-color:var(--border2);background:var(--surface3);transform:translateX(2px)}
+.aluno-row.selected{border-color:rgba(0,200,160,.4);background:rgba(0,200,160,.06)}
+.aluno-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;border:1.5px solid}
+.aluno-nome{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.aluno-mat{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.aluno-ic{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.aluno-bar-wrap{width:60px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.aluno-bar{height:100%;border-radius:2px}
+.aluno-tag{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid;white-space:nowrap;font-weight:600}
+.aluno-pend{font-size:11px;color:var(--accent4);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+
+/* MINI RADAR */
+.mini-radar-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.mini-dom{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.mini-dom-name{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.mini-dom-val{font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mini-dom-bar{height:3px;border-radius:2px;background:var(--surface3);overflow:hidden;margin-top:2px}
+.mini-dom-fill{height:100%;border-radius:2px}
+
+/* REGISTRO FORM */
+.step-indicator{display:flex;align-items:center;gap:0;margin-bottom:4px}
+.step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-weight:500}
+.step.active{color:var(--accent)}
+.step.done{color:var(--text2)}
+.step-num{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'JetBrains Mono',monospace;flex-shrink:0;transition:all var(--tr)}
+.step.active .step-num{border-color:var(--accent);background:rgba(0,200,160,.15);color:var(--accent)}
+.step.done .step-num{border-color:var(--text2);background:var(--surface2);color:var(--text2)}
+.step-line{flex:1;height:1px;background:var(--border);max-width:40px}
+
+/* FORM ELEMENTS */
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
+.form-sublabel{font-size:11px;color:var(--text3)}
+
+.tipo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tipo-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;cursor:pointer;transition:all var(--tr);text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;user-select:none}
+.tipo-card:hover{border-color:var(--border2);background:var(--surface3)}
+.tipo-card.selected{border-color:var(--tc,var(--accent));background:rgba(0,200,160,.07)}
+.tipo-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.tipo-nome{font-size:12px;font-weight:600;color:var(--text)}
+.tipo-desc{font-size:10px;color:var(--text3);line-height:1.4}
+
+.comp-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.comp-opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;cursor:pointer;transition:all var(--tr);display:flex;align-items:center;gap:10px;user-select:none}
+.comp-opt:hover{border-color:var(--border2);background:var(--surface3)}
+.comp-opt.selected{border-color:var(--accent);background:rgba(0,200,160,.07)}
+.comp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all var(--tr)}
+.comp-opt:not(.selected) .comp-dot{background:var(--surface3);border:1.5px solid var(--border2)}
+.comp-opt.selected .comp-dot{background:var(--accent)}
+.comp-opt-name{font-size:12px;font-weight:500;color:var(--text)}
+
+/* ENTRUSTMENT SELECTOR */
+.entrustment-select{display:flex;gap:8px}
+.ent-opt{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 6px;cursor:pointer;transition:all var(--tr);text-align:center;user-select:none}
+.ent-opt:hover{border-color:var(--border2)}
+.ent-opt.selected{border-color:var(--accent);background:rgba(0,200,160,.08)}
+.ent-num{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);line-height:1;margin-bottom:4px}
+.ent-opt.selected .ent-num{color:var(--accent)}
+.ent-label{font-size:9px;color:var(--text3);line-height:1.3;text-transform:uppercase;letter-spacing:.04em}
+
+/* NOTA SLIDER */
+.nota-display{font-size:36px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);text-align:center;margin:4px 0}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--surface3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+
+/* TEXTAREA */
+textarea.obs{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-family:'Syne',sans-serif;font-size:13px;color:var(--text);resize:vertical;min-height:100px;line-height:1.6;transition:border-color var(--tr)}
+textarea.obs:focus{outline:none;border-color:var(--accent);background:var(--surface3)}
+textarea.obs::placeholder{color:var(--text3);font-size:12px}
+
+/* SUCCESS */
+.success-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;text-align:center;gap:20px;animation:fadeUp .4s ease}
+.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(0,200,160,.12);border:2px solid rgba(0,200,160,.3);display:flex;align-items:center;justify-content:center;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-size:20px;font-weight:700;color:var(--text)}
+.success-sub{font-size:13px;color:var(--text2);max-width:340px;line-height:1.6}
+.success-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;width:100%;max-width:400px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.sc-row{display:flex;justify-content:space-between;align-items:center}
+.sc-label{font-size:11px;color:var(--text3)}
+.sc-val{font-size:13px;color:var(--text);font-weight:500;font-family:'JetBrains Mono',monospace}
+
+/* HISTORICO */
+.hist-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:flex-start;gap:14px}
+.hist-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:20px;border:1px solid;white-space:nowrap;margin-top:1px}
+.hist-body{flex:1;min-width:0}
+.hist-comp{font-size:13px;color:var(--text);font-weight:500;margin-bottom:3px}
+.hist-feedback{font-size:12px;color:var(--text2);line-height:1.5;font-style:italic;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hist-meta{display:flex;align-items:center;gap:12px;margin-top:7px;flex-wrap:wrap}
+.hist-aluno{font-size:11px;color:var(--text2)}
+.hist-nota{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.hist-date{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.entrustment-mini{display:flex;gap:2px}
+.e-pip{width:12px;height:3px;border-radius:2px;background:var(--surface3)}
+.e-pip.on{background:var(--accent)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.tipo-grid{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.tipo-grid,.comp-select-grid,.entrustment-select{flex-direction:column}.grid2,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    </div>
+    Proficere
+  </div>
+
+  <div class="prof-card">
+    <div class="prof-avatar">KM</div>
+    <div>
+      <div class="prof-name">Profa. Karin Mendes</div>
+      <div class="prof-role">Enfermagem · Clínica Médica</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Menu</div>
+    <div class="nav-item active" onclick="showView('turma',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Minha Turma
+      <span class="nav-badge">28</span>
+    </div>
+    <div class="nav-item" onclick="showView('registrar',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Nova Avaliação
+    </div>
+    <div class="nav-item" onclick="showView('historico',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v4H3z"/><path d="M3 9h18v4H3z"/><path d="M3 15h18v4H3z"/></svg>
+      Histórico
+    </div>
+  </div>
+
+  <div>
+    <div class="nav-label" style="margin-bottom:10px">Minhas Turmas</div>
+    <div id="turma-list"></div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sf-stat"><span class="sf-label">Avaliações registradas</span><span class="sf-val">47</span></div>
+    <div class="sf-stat"><span class="sf-label">Pendentes no período</span><span class="sf-val" style="color:var(--accent4)">8</span></div>
+    <div class="sf-stat"><span class="sf-label">Período atual</span><span class="sf-val">2026.1</span></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ── VIEW: MINHA TURMA ── -->
+  <div class="view active" id="view-turma">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 id="turma-title">Enfermagem 5A · 5º Período</h1>
+        <p id="turma-sub">2026.1 · 28 alunos · Clínica Médica e Cirúrgica</p>
+      </div>
+      <button class="btn-primary" onclick="showView('registrar', document.querySelector('.nav-item:nth-child(2))'))">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nova Avaliação
+      </button>
+    </div>
+
+    <div class="grid4" id="turma-kpis"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Alunos</span>
+          <span class="card-tag" id="aluno-count-tag">28 alunos</span>
+        </div>
+        <div class="aluno-list" id="aluno-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Cobertura por Domínio</span>
+          <span class="card-tag">turma completa</span>
+        </div>
+        <canvas id="turma-radar" width="280" height="220" style="display:block;margin:0 auto"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEW: REGISTRAR ── -->
+  <div class="view" id="view-registrar">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Nova Avaliação</h1>
+        <p>Registre uma observação clínica direta</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="resetForm()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          Limpar
+        </button>
+      </div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="step-indicator" id="step-indicator"></div>
+
+    <!-- STEP 1: aluno -->
+    <div id="step-1" class="step-panel">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Selecionar Aluno</span>
+          <span class="card-tag" id="step1-turma-tag">Turma 5A</span>
+        </div>
+        <div class="aluno-list" id="aluno-select-list"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: tipo + competência -->
+    <div id="step-2" class="step-panel" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Tipo de Avaliação</span>
+        </div>
+        <div class="form-group">
+          <div class="tipo-grid" id="tipo-grid"></div>
+        </div>
+      </div>
+      <div class="card" id="comp-card" style="display:none">
+        <div class="card-header">
+          <span class="card-title">Competência Avaliada</span>
+          <span class="card-tag">DCN Enfermagem</span>
+        </div>
+        <div class="comp-select-grid" id="comp-grid"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3: nota + feedback -->
+    <div id="step-3" class="step-panel" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Nível de Entrustment</span>
+          <span class="card-tag">Escala 1–5</span>
+        </div>
+        <div class="entrustment-select" id="ent-select"></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Nota</span><span class="card-tag">0 – 10</span></div>
+          <div class="nota-display" id="nota-display">7.0</div>
+          <input type="range" id="nota-range" min="0" max="100" value="70" oninput="updateNota(this.value)">
+          <div style="display:flex;justify-content:space-between;margin-top:6px">
+            <span style="font-size:11px;color:var(--text3)">0</span>
+            <span style="font-size:11px;color:var(--text3)">10</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Observação / Feedback</span></div>
+          <textarea class="obs" id="obs-text" placeholder="Descreva o que foi observado, pontos fortes e oportunidades de desenvolvimento. O aluno terá acesso a esse feedback..."></textarea>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px">
+        <button class="btn-ghost" onclick="goStep(2)">← Voltar</button>
+        <button class="btn-primary" onclick="submeterAvaliacao()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Registrar Avaliação
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="step-success" style="display:none">
+      <div class="card">
+        <div class="success-screen">
+          <div class="success-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">Avaliação registrada!</div>
+          <div class="success-sub" id="success-sub">A avaliação foi salva no portfólio do aluno e já está disponível para visualização.</div>
+          <div class="success-card" id="success-card"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+            <button class="btn-ghost" onclick="showView('turma', document.querySelector('.nav-item'))">Ver turma</button>
+            <button class="btn-primary" onclick="novaAvaliacao()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nova avaliação
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEW: HISTÓRICO ── -->
+  <div class="view" id="view-historico">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Histórico de Avaliações</h1>
+        <p>Todos os registros do período atual</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Registros recentes</span>
+        <span class="card-tag">2026.1 · 47 registros</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="hist-list"></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// ────────────────────────────────
+// DADOS
+// ────────────────────────────────
+const TURMAS = [
+  {id:1, nome:'Enfermagem 5A', periodo:'5º Período', cor:'#00c8a0', alunos:28, disciplina:'Clínica Médica e Cirúrgica'},
+  {id:2, nome:'Enfermagem 3B', periodo:'3º Período', cor:'#0092ff', alunos:32, disciplina:'Semiologia e Semiotécnica'},
+];
+
+const ALUNOS = [
+  {id:1,nome:'Mariana Oliveira',mat:'ENF-2023-047',ic:78,ent:3.4,pendente:false,av:9,cor:'#00c8a0',turma:1},
+  {id:2,nome:'Rafael Costa',mat:'ENF-2023-012',ic:65,ent:2.8,pendente:true,av:7,cor:'#0092ff',turma:1},
+  {id:3,nome:'Juliana Matos',mat:'ENF-2023-031',ic:82,ent:4.0,pendente:false,av:11,cor:'#b06bff',turma:1},
+  {id:4,nome:'Pedro Alves',mat:'ENF-2023-058',ic:54,ent:2.2,pendente:true,av:5,cor:'#f5a623',turma:1},
+  {id:5,nome:'Camila Souza',mat:'ENF-2023-019',ic:71,ent:3.1,pendente:false,av:8,cor:'#ff6b6b',turma:1},
+  {id:6,nome:'Lucas Ferreira',mat:'ENF-2023-074',ic:44,ent:1.9,pendente:true,av:4,cor:'#3d7ab0',turma:1},
+];
+
+const DOMINIOS = ['Cuidado clínico','Comunicação','Decisão','Ética','Educação','Gestão'];
+const DCORES   = ['#00c8a0','#0092ff','#b06bff','#f5a623','#ff6b6b','#3d7ab0'];
+const TURMA_RADAR_SCORES = [74,65,60,85,52,18];
+
+const TIPOS = [
+  {id:'osce',  nome:'OSCE',           desc:'Estação clínica estruturada',  cor:'#00c8a0', icon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+  {id:'ospe',  nome:'OSPE',           desc:'Procedimento em ambiente simulado', cor:'#0092ff', icon:'<path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>'},
+  {id:'clin',  nome:'Ensino Clínico', desc:'Observação direta no campo',   cor:'#b06bff', icon:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'},
+  {id:'teor',  nome:'Teórica',        desc:'Avaliação de conhecimento',    cor:'#f5a623', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'},
+];
+
+const COMPETENCIAS = [
+  'Avaliação clínica e exame físico',
+  'Administração de medicamentos',
+  'Cuidados com feridas e curativos',
+  'Comunicação com paciente e família',
+  'Documentação e registros de enfermagem',
+  'Suporte básico de vida',
+  'Raciocínio clínico e tomada de decisão',
+  'Ética e humanização do cuidado',
+];
+
+const ENT_LABELS = ['Não realiza','Com muita ajuda','Com supervisão','Supervisionado à distância','Autônomo'];
+
+const HISTORICO = [
+  {tipo:'OSCE',cor:'#00c8a0',bg:'rgba(0,200,160,.12)',border:'rgba(0,200,160,.3)',aluno:'Mariana Oliveira',comp:'Avaliação de sinais vitais e exame físico',feedback:'Excelente postura clínica. Organização impecável. Precisa melhorar comunicação verbal com o paciente.',nota:8.5,ent:4,data:'28 mai 2026'},
+  {tipo:'Ensino Clínico',cor:'#b06bff',bg:'rgba(176,107,255,.12)',border:'rgba(176,107,255,.3)',aluno:'Rafael Costa',comp:'Administração de medicamentos IV',feedback:'Seguro no procedimento após segunda tentativa. Revisar conferência dos 9 certos antes da próxima avaliação.',nota:6.8,ent:2,data:'26 mai 2026'},
+  {tipo:'OSPE',cor:'#0092ff',bg:'rgba(0,146,255,.12)',border:'rgba(0,146,255,.3)',aluno:'Juliana Matos',comp:'Curativo complexo e prevenção de infecção',feedback:'Técnica asséptica perfeita. Documentação completa. Liderança natural durante o procedimento.',nota:9.2,ent:5,data:'22 mai 2026'},
+  {tipo:'Teórica',cor:'#f5a623',bg:'rgba(245,166,35,.12)',border:'rgba(245,166,35,.3)',aluno:'Pedro Alves',comp:'Farmacologia — cardiovascular',feedback:'Dificuldade em correlacionar doses e patologia de base. Recomendo reforço antes do próximo módulo.',nota:5.5,ent:2,data:'20 mai 2026'},
+  {tipo:'OSCE',cor:'#00c8a0',bg:'rgba(0,200,160,.12)',border:'rgba(0,200,160,.3)',aluno:'Camila Souza',comp:'Suporte básico de vida — RCP',feedback:'Boa sequência de atendimento. Compressões com frequência adequada. Comunicação clara com a equipe.',nota:8.0,ent:4,data:'18 mai 2026'},
+];
+
+// ────────────────────────────────
+// ESTADO
+// ────────────────────────────────
+let currentTurma = 1;
+let selectedAluno = null;
+let selectedTipo  = null;
+let selectedComp  = null;
+let selectedEnt   = null;
+let currentStep   = 1;
+
+// ────────────────────────────────
+// NAV
+// ────────────────────────────────
+function showView(name, el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(name==='registrar') initRegistrar();
+  if(name==='historico') renderHistorico();
+}
+
+// ────────────────────────────────
+// TURMA SIDEBAR
+// ────────────────────────────────
+function renderTurmaList(){
+  document.getElementById('turma-list').innerHTML = TURMAS.map(t=>`
+    <div class="turma-pill${t.id===currentTurma?' active':''}" onclick="setTurma(${t.id})">
+      <div class="turma-dot" style="background:${t.cor}"></div>
+      <div>
+        <div class="turma-nome">${t.nome}</div>
+        <div class="turma-sub">${t.periodo}</div>
+      </div>
+      <div class="turma-count">${t.alunos}</div>
+    </div>`).join('');
+}
+
+function setTurma(id){
+  currentTurma=id;
+  renderTurmaList();
+  renderTurmaView();
+}
+
+// ────────────────────────────────
+// VIEW TURMA
+// ────────────────────────────────
+function renderTurmaView(){
+  const t = TURMAS.find(x=>x.id===currentTurma);
+  const alunos = ALUNOS.filter(a=>a.turma===currentTurma);
+  document.getElementById('turma-title').textContent = `${t.nome} · ${t.periodo}`;
+  document.getElementById('turma-sub').textContent   = `2026.1 · ${t.alunos} alunos · ${t.disciplina}`;
+  document.getElementById('aluno-count-tag').textContent = `${alunos.length} alunos`;
+
+  const pendentes = alunos.filter(a=>a.pendente).length;
+  const mediaIC   = Math.round(alunos.reduce((s,a)=>s+a.ic,0)/alunos.length);
+  const mediaEnt  = (alunos.reduce((s,a)=>s+a.ent,0)/alunos.length).toFixed(1);
+  const totalAv   = alunos.reduce((s,a)=>s+a.av,0);
+
+  document.getElementById('turma-kpis').innerHTML = `
+    <div class="kpi" style="--kpi-color:var(--accent)"><div class="kpi-label">IC Médio da Turma</div><div class="kpi-value">${mediaIC}<span style="font-size:14px;color:var(--text2)">%</span></div><div class="kpi-sub">índice de competência</div></div>
+    <div class="kpi" style="--kpi-color:var(--accent2)"><div class="kpi-label">Entrustment médio</div><div class="kpi-value">${mediaEnt}<span style="font-size:14px;color:var(--text2)">/5</span></div><div class="kpi-sub">nível médio da turma</div></div>
+    <div class="kpi" style="--kpi-color:var(--accent4)"><div class="kpi-label">Avaliações pendentes</div><div class="kpi-value" style="color:${pendentes>0?'var(--accent4)':'var(--text)'}">${pendentes}</div><div class="kpi-sub">alunos sem registro recente</div></div>
+    <div class="kpi" style="--kpi-color:var(--accent5)"><div class="kpi-label">Total registros</div><div class="kpi-value">${totalAv}</div><div class="kpi-sub">no período atual</div></div>`;
+
+  document.getElementById('aluno-list').innerHTML = alunos.map(a=>`
+    <div class="aluno-row" onclick="abrirAluno(${a.id})">
+      <div class="aluno-avatar" style="background:${a.cor}22;border-color:${a.cor}55;color:${a.cor}">${iniciais(a.nome)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="aluno-nome">${a.nome}</div>
+        <div class="aluno-mat">${a.mat}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+        ${a.pendente?'<span class="aluno-tag" style="color:var(--accent4);background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3)">pendente</span>':''}
+        <div>
+          <div class="aluno-ic" style="color:${a.cor}">${a.ic}%</div>
+          <div class="aluno-bar-wrap"><div class="aluno-bar" style="width:${a.ic}%;background:${a.cor}"></div></div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  drawTurmaRadar();
+}
+
+function abrirAluno(id){
+  selectedAluno = ALUNOS.find(a=>a.id===id);
+  const navEl = document.querySelector('.nav-item:nth-child(2)');
+  showView('registrar', navEl);
+  goStep(1);
+  setTimeout(()=>{
+    document.querySelectorAll('#aluno-select-list .aluno-row').forEach(el=>{
+      if(parseInt(el.dataset.id)===id){ el.classList.add('selected'); selectAluno(id); }
+    });
+  },100);
+}
+
+// ────────────────────────────────
+// RADAR DA TURMA
+// ────────────────────────────────
+function drawTurmaRadar(){
+  const canvas=document.getElementById('turma-radar');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const cx=140,cy=110,R=88,n=6;
+  ctx.clearRect(0,0,280,220);
+
+  for(let r=1;r<=5;r++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2;const x=cx+R*(r/5)*Math.cos(a),y=cy+R*(r/5)*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.closePath();ctx.strokeStyle=`rgba(30,42,58,${r===5?.9:.5})`;ctx.lineWidth=r===5?1:.5;ctx.stroke();
+  }
+  for(let i=0;i<n;i++){const a=Math.PI*2*i/n-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='rgba(30,42,58,.6)';ctx.lineWidth=.5;ctx.stroke();}
+
+  ctx.beginPath();
+  TURMA_RADAR_SCORES.forEach((s,i)=>{const a=Math.PI*2*i/n-Math.PI/2;const r=R*s/100;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.closePath();
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(0,200,160,.25)');g.addColorStop(1,'rgba(0,146,255,.06)');
+  ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='rgba(0,200,160,.55)';ctx.lineWidth=1.5;ctx.stroke();
+
+  TURMA_RADAR_SCORES.forEach((s,i)=>{
+    const a=Math.PI*2*i/n-Math.PI/2;const r=R*s/100;
+    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+    ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fillStyle=DCORES[i];ctx.fill();
+    ctx.strokeStyle='#0b0f14';ctx.lineWidth=1.2;ctx.stroke();
+  });
+
+  ctx.font='500 10px Syne,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  DOMINIOS.forEach((d,i)=>{
+    const a=Math.PI*2*i/n-Math.PI/2;
+    const lx=cx+(R+16)*Math.cos(a),ly=cy+(R+16)*Math.sin(a);
+    ctx.fillStyle=DCORES[i];ctx.fillText(d.split(' ')[0],lx,ly);
+  });
+}
+
+// ────────────────────────────────
+// REGISTRAR — INIT
+// ────────────────────────────────
+function initRegistrar(){
+  renderStepIndicator();
+  renderAlunoSelectList();
+  renderTipoGrid();
+  renderEntSelect();
+  goStep(1);
+}
+
+function renderStepIndicator(){
+  const steps=[{n:1,label:'Aluno'},{n:2,label:'Avaliação'},{n:3,label:'Registro'}];
+  document.getElementById('step-indicator').innerHTML = steps.map((s,i)=>`
+    ${i>0?'<div class="step-line"></div>':''}
+    <div class="step${currentStep===s.n?' active':currentStep>s.n?' done':''}" id="stepind-${s.n}">
+      <div class="step-num">${currentStep>s.n?'✓':s.n}</div>
+      ${s.label}
+    </div>`).join('');
+}
+
+function goStep(n){
+  currentStep=n;
+  [1,2,3].forEach(i=>document.getElementById('step-'+i).style.display=i===n?'flex':'none');
+  document.getElementById('step-'+n).style.flexDirection='column';
+  document.getElementById('step-'+n).style.gap='16px';
+  document.getElementById('step-success').style.display='none';
+  renderStepIndicator();
+}
+
+// ────────────────────────────────
+// STEP 1 — ALUNO
+// ────────────────────────────────
+function renderAlunoSelectList(){
+  const alunos = ALUNOS.filter(a=>a.turma===currentTurma);
+  document.getElementById('aluno-select-list').innerHTML = alunos.map(a=>`
+    <div class="aluno-row${selectedAluno?.id===a.id?' selected':''}" data-id="${a.id}" onclick="selectAluno(${a.id})">
+      <div class="aluno-avatar" style="background:${a.cor}22;border-color:${a.cor}55;color:${a.cor}">${iniciais(a.nome)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="aluno-nome">${a.nome}</div>
+        <div class="aluno-mat">${a.mat}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="aluno-ic" style="color:${a.cor}">${a.ic}%</div>
+        <div style="font-size:10px;color:var(--text3)">${a.av} avaliações</div>
+      </div>
+      ${a.pendente?'<span class="aluno-tag" style="color:var(--accent4);background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.25);font-size:9px">pendente</span>':''}
+    </div>`).join('');
+}
+
+function selectAluno(id){
+  selectedAluno = ALUNOS.find(a=>a.id===id);
+  document.querySelectorAll('#aluno-select-list .aluno-row').forEach(el=>el.classList.toggle('selected',parseInt(el.dataset.id)===id));
+  setTimeout(()=>goStep(2),200);
+}
+
+// ────────────────────────────────
+// STEP 2 — TIPO + COMPETÊNCIA
+// ────────────────────────────────
+function renderTipoGrid(){
+  document.getElementById('tipo-grid').innerHTML = TIPOS.map(t=>`
+    <div class="tipo-card${selectedTipo===t.id?' selected':''}" style="--tc:${t.cor}" onclick="selectTipo('${t.id}','${t.cor}')">
+      <div class="tipo-icon" style="background:${t.cor}22">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${t.cor}" stroke-width="2">${t.icon}</svg>
+      </div>
+      <div class="tipo-nome">${t.nome}</div>
+      <div class="tipo-desc">${t.desc}</div>
+    </div>`).join('');
+}
+
+function selectTipo(id, cor){
+  selectedTipo=id;
+  renderTipoGrid();
+  // mostrar competências
+  const card = document.getElementById('comp-card');
+  card.style.display='block';
+  document.getElementById('comp-grid').innerHTML = COMPETENCIAS.map((c,i)=>`
+    <div class="comp-opt${selectedComp===i?' selected':''}" onclick="selectComp(${i})">
+      <div class="comp-dot"></div>
+      <div class="comp-opt-name">${c}</div>
+    </div>`).join('');
+}
+
+function selectComp(i){
+  selectedComp=i;
+  document.querySelectorAll('.comp-opt').forEach((el,idx)=>el.classList.toggle('selected',idx===i));
+  setTimeout(()=>goStep(3),200);
+}
+
+// ────────────────────────────────
+// STEP 3 — NOTA + FEEDBACK
+// ────────────────────────────────
+function renderEntSelect(){
+  document.getElementById('ent-select').innerHTML = ENT_LABELS.map((l,i)=>`
+    <div class="ent-opt${selectedEnt===i+1?' selected':''}" onclick="selectEnt(${i+1})">
+      <div class="ent-num">${i+1}</div>
+      <div class="ent-label">${l}</div>
+    </div>`).join('');
+}
+
+function selectEnt(n){
+  selectedEnt=n;
+  document.querySelectorAll('.ent-opt').forEach((el,i)=>el.classList.toggle('selected',i+1===n));
+}
+
+function updateNota(v){
+  document.getElementById('nota-display').textContent = (v/10).toFixed(1);
+}
+
+// ────────────────────────────────
+// SUBMETER
+// ────────────────────────────────
+function submeterAvaliacao(){
+  const nota = (document.getElementById('nota-range').value/10).toFixed(1);
+  const obs   = document.getElementById('obs-text').value||'(sem observação registrada)';
+  const tipo  = TIPOS.find(t=>t.id===selectedTipo)||TIPOS[0];
+  const comp  = COMPETENCIAS[selectedComp]||COMPETENCIAS[0];
+  const ent   = selectedEnt||3;
+
+  [1,2,3].forEach(i=>document.getElementById('step-'+i).style.display='none');
+  document.getElementById('step-success').style.display='block';
+
+  document.getElementById('success-sub').textContent = `A avaliação de ${selectedAluno?.nome||'aluno'} foi salva no portfólio e já está disponível.`;
+
+  const pips = Array.from({length:5},(_,i)=>`<span style="display:inline-block;width:12px;height:3px;border-radius:2px;background:${i<ent?'var(--accent)':'var(--surface3)'};margin-right:2px"></span>`).join('');
+
+  document.getElementById('success-card').innerHTML = `
+    <div class="sc-row"><span class="sc-label">Aluno</span><span class="sc-val">${selectedAluno?.nome||'—'}</span></div>
+    <div class="sc-row"><span class="sc-label">Modalidade</span><span class="sc-val" style="color:${tipo.cor}">${tipo.nome}</span></div>
+    <div class="sc-row"><span class="sc-label">Competência</span><span class="sc-val" style="font-size:11px;max-width:200px;text-align:right">${comp}</span></div>
+    <div class="sc-row"><span class="sc-label">Nota</span><span class="sc-val" style="color:var(--accent)">${nota}</span></div>
+    <div class="sc-row"><span class="sc-label">Entrustment</span><span>${pips}</span></div>
+    <div style="margin-top:4px"><span class="sc-label">Observação</span><p style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5;font-style:italic">"${obs.substring(0,120)}${obs.length>120?'…':''}"</p></div>`;
+}
+
+function novaAvaliacao(){
+  resetForm();
+  goStep(1);
+}
+
+function resetForm(){
+  selectedAluno=null;selectedTipo=null;selectedComp=null;selectedEnt=null;
+  document.getElementById('obs-text').value='';
+  document.getElementById('nota-range').value=70;
+  document.getElementById('nota-display').textContent='7.0';
+  document.getElementById('comp-card').style.display='none';
+  renderAlunoSelectList();renderTipoGrid();renderEntSelect();
+  goStep(1);
+  document.getElementById('step-success').style.display='none';
+}
+
+// ────────────────────────────────
+// HISTÓRICO
+// ────────────────────────────────
+function renderHistorico(){
+  document.getElementById('hist-list').innerHTML = HISTORICO.map(h=>{
+    const pips=Array.from({length:5},(_,i)=>`<div class="e-pip${i<h.ent?' on':''}"></div>`).join('');
+    return `<div class="hist-item">
+      <span class="hist-tipo" style="color:${h.cor};background:${h.bg};border-color:${h.border}">${h.tipo}</span>
+      <div class="hist-body">
+        <div class="hist-comp">${h.comp}</div>
+        <div class="hist-feedback">"${h.feedback}"</div>
+        <div class="hist-meta">
+          <span class="hist-aluno">↳ ${h.aluno}</span>
+          <span class="hist-nota" style="color:${h.cor}">${h.nota}</span>
+          <div class="entrustment-mini">${pips}</div>
+          <span class="hist-date">${h.data}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ────────────────────────────────
+// UTILS
+// ────────────────────────────────
+function iniciais(nome){return nome.split(' ').slice(0,2).map(n=>n[0]).join('')}
+
+// ────────────────────────────────
+// INIT
+// ────────────────────────────────
+renderTurmaList();
+renderTurmaView();
+</script>
+</body>
+</html>

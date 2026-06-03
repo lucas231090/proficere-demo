@@ -1,0 +1,2058 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proficere — Coordenação</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --surface: #111820;
+        --surface2: #1a2332;
+        --surface3: #1e2a3a;
+        --border: #1f2e42;
+        --border2: #2a3f5a;
+        --text: #e8edf5;
+        --text2: #7a8fa8;
+        --text3: #3d5470;
+        --accent: #00c8a0;
+        --accent2: #0092ff;
+        --accent3: #ff6b6b;
+        --accent4: #f5a623;
+        --accent5: #b06bff;
+        --radius: 12px;
+        --radius-sm: 7px;
+        --tr: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Syne', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.4;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 28px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .coord-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        display: flex;
+        gap: 11px;
+        align-items: center;
+      }
+      .coord-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2a1a5c, #150d35);
+        border: 2px solid rgba(176, 107, 255, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent5);
+        flex-shrink: 0;
+      }
+      .coord-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .coord-role {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+        margin-top: 2px;
+      }
+      .coord-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(176, 107, 255, 0.1);
+        border: 1px solid rgba(176, 107, 255, 0.25);
+        color: var(--accent5);
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 20px;
+        margin-top: 5px;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 6px;
+        padding-left: 10px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all var(--tr);
+        border: 1px solid transparent;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: rgba(176, 107, 255, 0.08);
+        border-color: rgba(176, 107, 255, 0.25);
+        color: var(--accent5);
+      }
+      .nav-item svg {
+        flex-shrink: 0;
+        opacity: 0.6;
+      }
+      .nav-item.active svg {
+        opacity: 1;
+      }
+      .nav-badge {
+        margin-left: auto;
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .nav-badge.alert {
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--accent3);
+      }
+      .nav-badge.ok {
+        background: rgba(0, 200, 160, 0.12);
+        color: var(--accent);
+      }
+
+      .curso-pills {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .curso-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 11px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all var(--tr);
+      }
+      .curso-pill:hover {
+        border-color: var(--border2);
+        background: var(--surface2);
+      }
+      .curso-pill.active {
+        border-color: rgba(176, 107, 255, 0.4);
+        background: rgba(176, 107, 255, 0.06);
+      }
+      .curso-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .curso-info {
+        flex: 1;
+      }
+      .curso-nome {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .curso-sub {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .curso-n {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+        margin-left: auto;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .sf-row {
+        display: flex;
+        justify-content: space-between;
+      }
+      .sf-label {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .sf-val {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text2);
+      }
+
+      /* MAIN */
+      .main {
+        padding: 34px 38px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        min-width: 0;
+      }
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .topbar-left h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .topbar-left p {
+        font-size: 13px;
+        color: var(--text2);
+        margin-top: 4px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .btn-ghost {
+        font-family: 'Syne', sans-serif;
+        font-size: 12px;
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        background: none;
+        color: var(--text2);
+        border: 1px solid var(--border2);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--tr);
+      }
+      .btn-ghost:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .btn-accent {
+        font-family: 'Syne', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 7px 16px;
+        border-radius: var(--radius-sm);
+        background: var(--accent5);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--tr);
+      }
+      .btn-accent:hover {
+        background: #9f55ee;
+      }
+
+      /* VIEWS */
+      .view {
+        display: none;
+        flex-direction: column;
+        gap: 20px;
+        animation: fu 0.3s ease;
+      }
+      .view.active {
+        display: flex;
+      }
+      @keyframes fu {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CARD */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--text2);
+      }
+      .card-tag {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* GRIDS */
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .g3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .g4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+
+      /* KPI */
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .kpi::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--kc, var(--accent5));
+      }
+      .kpi-label {
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 7px;
+      }
+      .kpi-value {
+        font-size: 26px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+        line-height: 1;
+      }
+      .kpi-sub {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .badge-pill {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+      .bp-red {
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--accent3);
+      }
+      .bp-green {
+        background: rgba(0, 200, 160, 0.15);
+        color: var(--accent);
+      }
+      .bp-amber {
+        background: rgba(245, 166, 35, 0.15);
+        color: var(--accent4);
+      }
+      .bp-purple {
+        background: rgba(176, 107, 255, 0.15);
+        color: var(--accent5);
+      }
+
+      /* ALUNOS RANKING */
+      .aluno-rank {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .rank-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 13px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        cursor: pointer;
+        transition: all var(--tr);
+      }
+      .rank-item:hover {
+        border-color: var(--border2);
+        transform: translateX(2px);
+      }
+      .rank-item.alert-row {
+        border-color: rgba(255, 107, 107, 0.25);
+        background: rgba(255, 107, 107, 0.04);
+      }
+      .rank-num {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text3);
+        width: 20px;
+        flex-shrink: 0;
+        text-align: center;
+      }
+      .rank-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+        border: 1.5px solid;
+      }
+      .rank-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rank-sub {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .rank-bar-wrap {
+        width: 70px;
+        height: 4px;
+        background: var(--surface3);
+        border-radius: 2px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .rank-bar {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .rank-val {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        width: 28px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .rank-tag {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 10px;
+        border: 1px solid;
+        font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      /* COMPETÊNCIAS HEATMAP */
+      .comp-heat {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .ch-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .ch-label {
+        font-size: 12px;
+        color: var(--text);
+        width: 200px;
+        flex-shrink: 0;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ch-bar-wrap {
+        flex: 1;
+        height: 22px;
+        background: var(--surface2);
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      .ch-bar {
+        height: 100%;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding-left: 8px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .ch-bar-label {
+        font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+        color: rgba(255, 255, 255, 0.7);
+        position: absolute;
+        left: 10px;
+        line-height: 22px;
+      }
+      .ch-count {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+        width: 60px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .ch-alert {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* PROFESSORES */
+      .prof-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .prof-card-item {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        cursor: pointer;
+        transition: all var(--tr);
+      }
+      .prof-card-item:hover {
+        border-color: var(--border2);
+        background: var(--surface3);
+      }
+      .prof-card-item.selected {
+        border-color: rgba(176, 107, 255, 0.4);
+        background: rgba(176, 107, 255, 0.06);
+      }
+      .pci-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .pci-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1.5px solid;
+        flex-shrink: 0;
+      }
+      .pci-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .pci-disc {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .pci-stats {
+        display: flex;
+        gap: 10px;
+      }
+      .pci-stat {
+        flex: 1;
+        background: var(--surface3);
+        border-radius: 4px;
+        padding: 7px;
+        text-align: center;
+      }
+      .pci-stat-val {
+        font-size: 16px;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text);
+        line-height: 1;
+      }
+      .pci-stat-label {
+        font-size: 9px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+      }
+
+      /* MODAL / DRAWER */
+      .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 200;
+        display: none;
+        backdrop-filter: blur(2px);
+      }
+      .drawer-overlay.open {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+      }
+      .drawer {
+        width: 480px;
+        max-width: 95vw;
+        height: 100vh;
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        padding: 28px;
+        overflow-y: auto;
+        animation: slideIn 0.25s ease;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .drawer-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+      .drawer-close {
+        background: none;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text2);
+        cursor: pointer;
+        padding: 6px 10px;
+        font-size: 12px;
+        transition: all var(--tr);
+      }
+      .drawer-close:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .drawer-section {
+        margin-bottom: 20px;
+      }
+      .drawer-section-title {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+      .dom-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 7px;
+      }
+      .dom-name {
+        font-size: 12px;
+        color: var(--text2);
+        width: 110px;
+        flex-shrink: 0;
+      }
+      .dom-bar-wrap {
+        flex: 1;
+        height: 5px;
+        background: var(--surface3);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .dom-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.7s;
+      }
+      .dom-val {
+        font-size: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        width: 35px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .tl-mini {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tl-mini-item {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+      }
+      .tl-mini-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+      .tl-mini-tipo {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 2px 8px;
+        border-radius: 20px;
+        border: 1px solid;
+      }
+      .tl-mini-date {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .tl-mini-comp {
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .tl-mini-fb {
+        font-size: 11px;
+        color: var(--text2);
+        line-height: 1.5;
+        font-style: italic;
+        margin-top: 3px;
+      }
+      .tl-mini-nota {
+        font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+        margin-top: 5px;
+      }
+      .e-pip {
+        width: 12px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--surface3);
+      }
+      .e-pip.on {
+        background: var(--accent);
+      }
+      .entrustment-mini {
+        display: flex;
+        gap: 2px;
+      }
+
+      /* ALERTA STRIP */
+      .alert-strip {
+        background: rgba(255, 107, 107, 0.06);
+        border: 1px solid rgba(255, 107, 107, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--accent3);
+      }
+      .alert-icon {
+        flex-shrink: 0;
+      }
+
+      /* SCROLLBAR */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+          height: auto;
+        }
+        .g4 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .g2,
+        .g3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-mark">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#000"
+              stroke-width="2.5"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          Proficere
+        </div>
+
+        <div class="coord-card">
+          <div class="coord-avatar">EL</div>
+          <div>
+            <div class="coord-name">Profa. Elaine Lima</div>
+            <div class="coord-role">Coordenação Acadêmica</div>
+            <div class="coord-badge">
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+              Coordenadora
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="nav-label">Menu</div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <div class="nav-item active" onclick="showView('visao', this)">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              Visão Geral
+            </div>
+            <div class="nav-item" onclick="showView('alunos', this)">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              Alunos
+              <span class="nav-badge alert">3 alertas</span>
+            </div>
+            <div class="nav-item" onclick="showView('competencias', this)">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              Competências
+              <span class="nav-badge alert">2 gaps</span>
+            </div>
+            <div class="nav-item" onclick="showView('professores', this)">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Professores
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="nav-label" style="margin-bottom: 10px">Turmas</div>
+          <div class="curso-pills" id="curso-pills"></div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="sf-row">
+            <span class="sf-label">Período</span
+            ><span class="sf-val">2026.1</span>
+          </div>
+          <div class="sf-row">
+            <span class="sf-label">Total de alunos</span
+            ><span class="sf-val">120</span>
+          </div>
+          <div class="sf-row">
+            <span class="sf-label">Registros no período</span
+            ><span class="sf-val">318</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <!-- VIEW: VISÃO GERAL -->
+        <div class="view active" id="view-visao">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1 id="vg-title">Curso de Enfermagem</h1>
+              <p>Panorama do período 2026.1 · Currículo por competências</p>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button class="btn-ghost">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Exportar relatório
+              </button>
+            </div>
+          </div>
+
+          <div class="g4" id="vg-kpis"></div>
+
+          <div class="g2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title"
+                  >Cobertura de Competências por Turma</span
+                ><span class="card-tag">média geral</span>
+              </div>
+              <canvas
+                id="vg-radar"
+                width="260"
+                height="220"
+                style="display: block; margin: 0 auto"
+              ></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Avaliações por Período</span
+                ><span class="card-tag">acumulado 2026.1</span>
+              </div>
+              <canvas
+                id="vg-bars"
+                width="300"
+                height="220"
+                style="
+                  display: block;
+                  margin: 0 auto;
+                  width: 100%;
+                  height: 220px;
+                "
+              ></canvas>
+            </div>
+          </div>
+
+          <div class="alert-strip" id="vg-alert">
+            <svg
+              class="alert-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span
+              ><strong>3 alunos</strong> sem avaliação nos últimos 30 dias ·
+              <strong>2 domínios</strong> com cobertura abaixo de 30% na turma
+              3B ·
+              <a
+                href="#"
+                onclick="
+                  showView(
+                    'competencias',
+                    document.querySelectorAll('.nav-item')[2],
+                  )
+                "
+                style="color: var(--accent3); text-decoration: underline"
+                >Ver gaps →</a
+              ></span
+            >
+          </div>
+        </div>
+
+        <!-- VIEW: ALUNOS -->
+        <div class="view" id="view-alunos">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Painel de Alunos</h1>
+              <p>Registro por aluno · período 2026.1</p>
+            </div>
+            <div style="display: flex; gap: 6px">
+              <button class="btn-ghost" onclick="sortAlunos('av')" id="sort-av">
+                ↓ Por registros
+              </button>
+              <button class="btn-ghost" onclick="sortAlunos('ic')" id="sort-ic">
+                Por IC%
+              </button>
+            </div>
+          </div>
+
+          <div class="g2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Mais avaliados</span
+                ><span class="card-tag">top 6 registros</span>
+              </div>
+              <div class="aluno-rank" id="rank-mais"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Menos avaliados</span>
+                <span
+                  class="card-tag"
+                  style="
+                    color: var(--accent3);
+                    border-color: rgba(255, 107, 107, 0.3);
+                    background: rgba(255, 107, 107, 0.06);
+                  "
+                  >⚠ atenção</span
+                >
+              </div>
+              <div class="aluno-rank" id="rank-menos"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Todos os alunos</span
+              ><span class="card-tag" id="alunos-count-tag">—</span>
+            </div>
+            <div class="aluno-rank" id="rank-todos"></div>
+          </div>
+        </div>
+
+        <!-- VIEW: COMPETÊNCIAS -->
+        <div class="view" id="view-competencias">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Cobertura de Competências</h1>
+              <p>Quais competências estão sendo menos avaliadas</p>
+            </div>
+          </div>
+
+          <div class="g2">
+            <div class="card" style="grid-column: span 2">
+              <div class="card-header">
+                <span class="card-title">Avaliações por Competência</span
+                ><span class="card-tag" id="comp-turma-tag"
+                  >todas as turmas</span
+                >
+              </div>
+              <div class="comp-heat" id="comp-heat"></div>
+            </div>
+          </div>
+
+          <div class="g3">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Por Domínio</span
+                ><span class="card-tag">cobertura %</span>
+              </div>
+              <canvas
+                id="comp-radar"
+                width="220"
+                height="200"
+                style="display: block; margin: 0 auto"
+              ></canvas>
+            </div>
+            <div class="card" style="grid-column: span 2">
+              <div class="card-header">
+                <span class="card-title">Gaps identificados</span
+                ><span class="card-tag">cobertura &lt; 40%</span>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 10px"
+                id="gaps-list"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: PROFESSORES -->
+        <div class="view" id="view-professores">
+          <div class="topbar">
+            <div class="topbar-left">
+              <h1>Professores Avaliadores</h1>
+              <p>Atividade de registro no período 2026.1</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Equipe docente</span
+              ><span class="card-tag">6 professores</span>
+            </div>
+            <div class="prof-grid" id="prof-grid"></div>
+          </div>
+          <div class="card" id="prof-detail-card" style="display: none">
+            <div class="card-header">
+              <span class="card-title" id="prof-detail-title">Detalhes</span>
+            </div>
+            <div id="prof-detail-body"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- DRAWER -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()">
+      <div class="drawer" onclick="(e) => e.stopPropagation()">
+        <div class="drawer-header">
+          <div>
+            <div style="font-size: 16px; font-weight: 700" id="drawer-title">
+              —
+            </div>
+            <div
+              style="
+                font-size: 12px;
+                color: var(--text2);
+                font-family: 'JetBrains Mono', monospace;
+                margin-top: 3px;
+              "
+              id="drawer-sub"
+            >
+              —
+            </div>
+          </div>
+          <button class="drawer-close" onclick="closeDrawer()">✕ Fechar</button>
+        </div>
+        <div id="drawer-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // ── DADOS ───────────────────────────────────────
+      const TURMAS = [
+        {
+          id: 1,
+          nome: 'Enfermagem 5A',
+          periodo: '5º Período',
+          cor: '#00c8a0',
+          n: 28,
+        },
+        {
+          id: 2,
+          nome: 'Enfermagem 3B',
+          periodo: '3º Período',
+          cor: '#0092ff',
+          n: 32,
+        },
+        {
+          id: 3,
+          nome: 'Enfermagem 1C',
+          periodo: '1º Período',
+          cor: '#b06bff',
+          n: 38,
+        },
+        {
+          id: 4,
+          nome: 'Psicologia 4A',
+          periodo: '4º Período',
+          cor: '#f5a623',
+          n: 22,
+        },
+      ];
+      let currentTurma = 1;
+
+      const DOMINIOS = [
+        'Cuidado clínico',
+        'Comunicação',
+        'Decisão',
+        'Ética',
+        'Educação',
+        'Gestão',
+      ];
+      const DCORES = [
+        '#00c8a0',
+        '#0092ff',
+        '#b06bff',
+        '#f5a623',
+        '#ff6b6b',
+        '#3d7ab0',
+      ];
+      const RADAR_SCORES = [74, 65, 55, 85, 48, 22];
+
+      const COMPETENCIAS_DATA = [
+        {
+          nome: 'Avaliação clínica e exame físico',
+          av: 42,
+          max: 60,
+          cor: '#00c8a0',
+        },
+        {
+          nome: 'Administração de medicamentos',
+          av: 38,
+          max: 60,
+          cor: '#00c8a0',
+        },
+        {
+          nome: 'Cuidados com feridas / curativos',
+          av: 31,
+          max: 60,
+          cor: '#0092ff',
+        },
+        {
+          nome: 'Comunicação com paciente/família',
+          av: 28,
+          max: 60,
+          cor: '#0092ff',
+        },
+        { nome: 'Documentação e registros', av: 19, max: 60, cor: '#b06bff' },
+        {
+          nome: 'Suporte básico de vida (RCP)',
+          av: 35,
+          max: 60,
+          cor: '#b06bff',
+        },
+        {
+          nome: 'Raciocínio clínico / decisão',
+          av: 22,
+          max: 60,
+          cor: '#f5a623',
+        },
+        {
+          nome: 'Ética e humanização do cuidado',
+          av: 44,
+          max: 60,
+          cor: '#f5a623',
+        },
+        { nome: 'Ensino e educação em saúde', av: 14, max: 60, cor: '#ff6b6b' },
+        {
+          nome: 'Gestão do processo de trabalho',
+          av: 8,
+          max: 60,
+          cor: '#3d7ab0',
+        },
+      ];
+
+      const ALUNOS_ALL = [
+        {
+          id: 1,
+          nome: 'Juliana Matos',
+          mat: 'ENF-2023-031',
+          ic: 82,
+          av: 11,
+          ent: 4.0,
+          cor: '#b06bff',
+          alerta: false,
+          turma: 1,
+        },
+        {
+          id: 2,
+          nome: 'Mariana Oliveira',
+          mat: 'ENF-2023-047',
+          ic: 78,
+          av: 9,
+          ent: 3.4,
+          cor: '#00c8a0',
+          alerta: false,
+          turma: 1,
+        },
+        {
+          id: 3,
+          nome: 'Camila Souza',
+          mat: 'ENF-2023-019',
+          ic: 71,
+          av: 8,
+          ent: 3.1,
+          cor: '#ff6b6b',
+          alerta: false,
+          turma: 1,
+        },
+        {
+          id: 4,
+          nome: 'Rafael Costa',
+          mat: 'ENF-2023-012',
+          ic: 65,
+          av: 7,
+          ent: 2.8,
+          cor: '#0092ff',
+          alerta: false,
+          turma: 1,
+        },
+        {
+          id: 5,
+          nome: 'Pedro Alves',
+          mat: 'ENF-2023-058',
+          ic: 54,
+          av: 5,
+          ent: 2.2,
+          cor: '#f5a623',
+          alerta: true,
+          turma: 1,
+        },
+        {
+          id: 6,
+          nome: 'Lucas Ferreira',
+          mat: 'ENF-2023-074',
+          ic: 44,
+          av: 4,
+          ent: 1.9,
+          cor: '#3d7ab0',
+          alerta: true,
+          turma: 1,
+        },
+        {
+          id: 7,
+          nome: 'Beatriz Nunes',
+          mat: 'ENF-2023-088',
+          ic: 39,
+          av: 2,
+          ent: 1.5,
+          cor: '#ff6b6b',
+          alerta: true,
+          turma: 1,
+        },
+        {
+          id: 8,
+          nome: 'Carlos Mendes',
+          mat: 'ENF-2021-011',
+          ic: 77,
+          av: 10,
+          ent: 3.8,
+          cor: '#00c8a0',
+          alerta: false,
+          turma: 2,
+        },
+        {
+          id: 9,
+          nome: 'Fernanda Lima',
+          mat: 'ENF-2021-034',
+          ic: 68,
+          av: 8,
+          ent: 3.0,
+          cor: '#b06bff',
+          alerta: false,
+          turma: 2,
+        },
+        {
+          id: 10,
+          nome: 'André Rocha',
+          mat: 'ENF-2021-055',
+          ic: 55,
+          av: 6,
+          ent: 2.5,
+          cor: '#f5a623',
+          alerta: false,
+          turma: 2,
+        },
+      ];
+
+      const PROFESSORES = [
+        {
+          id: 1,
+          nome: 'Profa. Karin Mendes',
+          disc: 'Clínica Médica',
+          av: 18,
+          alunos: 14,
+          ini: 'KM',
+          cor: '#00c8a0',
+          tipos: ['OSCE', 'Ensino Clínico'],
+        },
+        {
+          id: 2,
+          nome: 'Prof. Renato Alves',
+          disc: 'Enfermagem Cirúrgica',
+          av: 14,
+          alunos: 12,
+          ini: 'RA',
+          cor: '#0092ff',
+          tipos: ['Ensino Clínico', 'OSPE'],
+        },
+        {
+          id: 3,
+          nome: 'Profa. Sandra Luz',
+          disc: 'Saúde Coletiva',
+          av: 9,
+          alunos: 10,
+          ini: 'SL',
+          cor: '#b06bff',
+          tipos: ['OSPE', 'Teórica'],
+        },
+        {
+          id: 4,
+          nome: 'Prof. Bruno Ferreira',
+          disc: 'Farmacologia',
+          av: 7,
+          alunos: 18,
+          ini: 'BF',
+          cor: '#f5a623',
+          tipos: ['Teórica'],
+        },
+        {
+          id: 5,
+          nome: 'Profa. Ana Carvalho',
+          disc: 'Saúde Mental',
+          av: 5,
+          alunos: 8,
+          ini: 'AC',
+          cor: '#ff6b6b',
+          tipos: ['Teórica', 'OSCE'],
+        },
+        {
+          id: 6,
+          nome: 'Prof. Diego Castro',
+          disc: 'Urgência/Emergência',
+          av: 4,
+          alunos: 6,
+          ini: 'DC',
+          cor: '#3d7ab0',
+          tipos: ['OSCE'],
+        },
+      ];
+
+      const ALUNO_HISTORICO = {
+        1: [
+          {
+            tipo: 'OSPE',
+            cor: '#0092ff',
+            bg: 'rgba(0,146,255,.12)',
+            border: 'rgba(0,146,255,.3)',
+            comp: 'Curativo complexo',
+            nota: 9.2,
+            ent: 5,
+            data: '22 mai 2026',
+            fb: 'Técnica asséptica impecável.',
+          },
+          {
+            tipo: 'OSCE',
+            cor: '#00c8a0',
+            bg: 'rgba(0,200,160,.12)',
+            border: 'rgba(0,200,160,.3)',
+            comp: 'Exame físico geral',
+            nota: 8.8,
+            ent: 4,
+            data: '14 mai 2026',
+            fb: 'Sequência correta, boa comunicação.',
+          },
+        ],
+        2: [
+          {
+            tipo: 'OSCE',
+            cor: '#00c8a0',
+            bg: 'rgba(0,200,160,.12)',
+            border: 'rgba(0,200,160,.3)',
+            comp: 'Sinais vitais',
+            nota: 8.5,
+            ent: 4,
+            data: '28 mai 2026',
+            fb: 'Organização impecável.',
+          },
+          {
+            tipo: 'Teórica',
+            cor: '#f5a623',
+            bg: 'rgba(245,166,35,.12)',
+            border: 'rgba(245,166,35,.3)',
+            comp: 'Farmacologia cardiovascular',
+            nota: 9.0,
+            ent: 5,
+            data: '28 abr 2026',
+            fb: 'Domínio teórico consistente.',
+          },
+        ],
+        7: [
+          {
+            tipo: 'OSCE',
+            cor: '#00c8a0',
+            bg: 'rgba(0,200,160,.12)',
+            border: 'rgba(0,200,160,.3)',
+            comp: 'Comunicação com paciente',
+            nota: 5.0,
+            ent: 1,
+            data: '10 abr 2026',
+            fb: 'Precisa de mais supervisão.',
+          },
+        ],
+      };
+
+      let sortMode = 'av';
+
+      // ── NAV ─────────────────────────────────────────
+      function showView(name, el) {
+        document
+          .querySelectorAll('.view')
+          .forEach((v) => v.classList.remove('active'));
+        document.getElementById('view-' + name).classList.add('active');
+        document
+          .querySelectorAll('.nav-item')
+          .forEach((n) => n.classList.remove('active'));
+        if (el) el.classList.add('active');
+        if (name === 'alunos') renderAlunos();
+        if (name === 'competencias') renderCompetencias();
+        if (name === 'professores') renderProfessores();
+      }
+
+      // ── CURSO PILLS ──────────────────────────────────
+      function renderCursoPills() {
+        document.getElementById('curso-pills').innerHTML = TURMAS.map(
+          (t) => `
+    <div class="curso-pill${t.id === currentTurma ? ' active' : ''}" onclick="setTurma(${t.id})">
+      <div class="curso-dot" style="background:${t.cor}"></div>
+      <div class="curso-info"><div class="curso-nome">${t.nome}</div><div class="curso-sub">${t.periodo}</div></div>
+      <div class="curso-n">${t.n}</div>
+    </div>`,
+        ).join('');
+      }
+      function setTurma(id) {
+        currentTurma = id;
+        renderCursoPills();
+        renderVisaoGeral();
+      }
+
+      // ── VISÃO GERAL ──────────────────────────────────
+      function renderVisaoGeral() {
+        const t = TURMAS.find((x) => x.id === currentTurma);
+        document.getElementById('vg-title').textContent =
+          `${t.nome} · ${t.periodo}`;
+
+        document.getElementById('vg-kpis').innerHTML = `
+    <div class="kpi" style="--kc:var(--accent5)"><div class="kpi-label">Alunos ativos</div><div class="kpi-value">${t.n}</div><div class="kpi-sub">matriculados no período</div></div>
+    <div class="kpi" style="--kc:var(--accent)"><div class="kpi-label">IC médio</div><div class="kpi-value">64<span style="font-size:14px;color:var(--text2)">%</span></div><div class="kpi-sub"><span class="badge-pill bp-green">↑ +7%</span> vs 2025.2</div></div>
+    <div class="kpi" style="--kc:var(--accent3)"><div class="kpi-label">Sem avaliação 30d</div><div class="kpi-value" style="color:var(--accent3)">3</div><div class="kpi-sub"><span class="badge-pill bp-red">⚠ atenção</span></div></div>
+    <div class="kpi" style="--kc:var(--accent4)"><div class="kpi-label">Domínios com gap</div><div class="kpi-value" style="color:var(--accent4)">2</div><div class="kpi-sub"><span class="badge-pill bp-amber">Educação · Gestão</span></div></div>`;
+
+        drawVgRadar();
+        drawVgBars();
+      }
+
+      function drawVgRadar() {
+        const cv = document.getElementById('vg-radar'),
+          ctx = cv.getContext('2d');
+        const cx = 130,
+          cy = 110,
+          R = 88,
+          n = 6;
+        ctx.clearRect(0, 0, 260, 220);
+        for (let r = 1; r <= 5; r++) {
+          ctx.beginPath();
+          for (let i = 0; i < n; i++) {
+            const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+            const x = cx + R * (r / 5) * Math.cos(a),
+              y = cy + R * (r / 5) * Math.sin(a);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = `rgba(30,42,58,${r === 5 ? 0.9 : 0.45})`;
+          ctx.lineWidth = r === 5 ? 1 : 0.5;
+          ctx.stroke();
+        }
+        for (let i = 0; i < n; i++) {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+          ctx.strokeStyle = 'rgba(30,42,58,.6)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        RADAR_SCORES.forEach((s, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+          const r = (R * s) / 100;
+          i === 0
+            ? ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a))
+            : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        });
+        ctx.closePath();
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        g.addColorStop(0, 'rgba(176,107,255,.25)');
+        g.addColorStop(1, 'rgba(0,146,255,.05)');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(176,107,255,.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        RADAR_SCORES.forEach((s, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2,
+            r = (R * s) / 100;
+          const x = cx + r * Math.cos(a),
+            y = cy + r * Math.sin(a);
+          ctx.beginPath();
+          ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = DCORES[i];
+          ctx.fill();
+          ctx.strokeStyle = '#0b0f14';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        });
+        ctx.font = '500 10px Syne,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        DOMINIOS.forEach((d, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2,
+            lx = cx + (R + 16) * Math.cos(a),
+            ly = cy + (R + 16) * Math.sin(a);
+          ctx.fillStyle = DCORES[i];
+          ctx.fillText(d.split(' ')[0], lx, ly);
+        });
+      }
+
+      function drawVgBars() {
+        const cv = document.getElementById('vg-bars'),
+          ctx = cv.getContext('2d');
+        const W = cv.offsetWidth || 300,
+          H = 220;
+        cv.width = W;
+        cv.height = H;
+        ctx.clearRect(0, 0, W, H);
+        const periodos = ['1º', '2º', '3º', '4º', '5º'];
+        const vals = [18, 32, 55, 72, 88];
+        const colors = ['#3d7ab0', '#b06bff', '#0092ff', '#f5a623', '#00c8a0'];
+        const pad = { t: 16, r: 16, b: 30, l: 36 };
+        const bw = ((W - pad.l - pad.r) / periodos.length) * 0.55;
+        const gap = (W - pad.l - pad.r) / periodos.length;
+        const maxV = 100;
+
+        // grid lines
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (H - pad.t - pad.b) * (1 - i / 4);
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y);
+          ctx.lineTo(W - pad.r, y);
+          ctx.strokeStyle = 'rgba(30,42,58,.5)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          ctx.fillStyle = '#3d5470';
+          ctx.font = '10px JetBrains Mono,monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(i * 25, pad.l - 5, y + 3);
+        }
+
+        vals.forEach((v, i) => {
+          const x = pad.l + gap * i + (gap - bw) / 2;
+          const barH = ((H - pad.t - pad.b) * v) / maxV;
+          const y = H - pad.b - barH;
+          // glow
+          ctx.shadowColor = colors[i];
+          ctx.shadowBlur = 8;
+          ctx.fillStyle = colors[i];
+          ctx.beginPath();
+          ctx.roundRect(x, y, bw, barH, 3);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          // label
+          ctx.fillStyle = colors[i];
+          ctx.font = 'bold 11px JetBrains Mono,monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(v, x + bw / 2, y - 5);
+          ctx.fillStyle = '#3d5470';
+          ctx.font = '10px Syne,sans-serif';
+          ctx.fillText(periodos[i] + 'º', x + bw / 2, H - pad.b + 14);
+        });
+      }
+
+      // ── ALUNOS ───────────────────────────────────────
+      function sortAlunos(mode) {
+        sortMode = mode;
+        document.getElementById('sort-av').style.opacity =
+          mode === 'av' ? 1 : 0.5;
+        document.getElementById('sort-ic').style.opacity =
+          mode === 'ic' ? 1 : 0.5;
+        renderAlunos();
+      }
+
+      function renderAlunos() {
+        const all = [...ALUNOS_ALL].sort((a, b) =>
+          sortMode === 'av' ? b.av - a.av : b.ic - a.ic,
+        );
+        const mais = all.slice(0, 5);
+        const menos = [...ALUNOS_ALL].sort((a, b) => a.av - b.av).slice(0, 5);
+
+        document.getElementById('alunos-count-tag').textContent =
+          `${ALUNOS_ALL.length} alunos`;
+        document.getElementById('rank-mais').innerHTML = rankRows(
+          mais,
+          false,
+          'av',
+        );
+        document.getElementById('rank-menos').innerHTML = rankRows(
+          menos,
+          true,
+          'av',
+        );
+        document.getElementById('rank-todos').innerHTML = rankRows(
+          all,
+          false,
+          sortMode,
+        );
+      }
+
+      function rankRows(list, alert, mode) {
+        const max = Math.max(...list.map((a) => (mode === 'av' ? a.av : a.ic)));
+        return list
+          .map((a, i) => {
+            const val = mode === 'av' ? a.av : a.ic;
+            const isAlert = a.alerta || (alert && a.av <= 4);
+            return `<div class="rank-item${isAlert ? ' alert-row' : ''}" onclick="openDrawerAluno(${a.id})">
+      <div class="rank-num">${i + 1}</div>
+      <div class="rank-avatar" style="background:${a.cor}22;border-color:${a.cor}55;color:${a.cor}">${iniciais(a.nome)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="rank-name">${a.nome}</div>
+        <div class="rank-sub">${a.mat}</div>
+      </div>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(val / max) * 100}%;background:${isAlert ? 'var(--accent3)' : a.cor}"></div></div>
+      <div class="rank-val" style="color:${isAlert ? 'var(--accent3)' : a.cor}">${val}${mode === 'ic' ? '%' : ''}</div>
+      ${isAlert ? '<span class="rank-tag" style="color:var(--accent3);background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.25)">⚠</span>' : ''}
+    </div>`;
+          })
+          .join('');
+      }
+
+      function openDrawerAluno(id) {
+        const a = ALUNOS_ALL.find((x) => x.id === id);
+        if (!a) return;
+        document.getElementById('drawer-title').textContent = a.nome;
+        document.getElementById('drawer-sub').textContent =
+          `${a.mat} · IC: ${a.ic}% · ${a.av} avaliações`;
+
+        const domScores = [78, 65, 55, 88, 40, 10].map((s) =>
+          Math.round(s * (a.ic / 80)),
+        );
+        const domRows = DOMINIOS.map(
+          (d, i) => `
+    <div class="dom-row">
+      <div class="dom-name">${d}</div>
+      <div class="dom-bar-wrap"><div class="dom-bar-fill" style="width:${domScores[i]}%;background:${DCORES[i]}"></div></div>
+      <div class="dom-val" style="color:${DCORES[i]}">${domScores[i]}%</div>
+    </div>`,
+        ).join('');
+
+        const hist = ALUNO_HISTORICO[id] || [];
+        const histHTML = hist.length
+          ? hist
+              .map((h) => {
+                const pips = Array.from(
+                  { length: 5 },
+                  (_, i) =>
+                    `<div class="e-pip${i < h.ent ? ' on' : ''}"></div>`,
+                ).join('');
+                return `<div class="tl-mini-item">
+      <div class="tl-mini-header">
+        <span class="tl-mini-tipo" style="color:${h.cor};background:${h.bg};border-color:${h.border}">${h.tipo}</span>
+        <span class="tl-mini-date">${h.data}</span>
+      </div>
+      <div class="tl-mini-comp">${h.comp}</div>
+      <div class="tl-mini-fb">"${h.fb}"</div>
+      <div class="tl-mini-nota" style="color:${h.cor}">Nota: ${h.nota} &nbsp;<div class="entrustment-mini" style="display:inline-flex">${pips}</div></div>
+    </div>`;
+              })
+              .join('')
+          : `<div style="color:var(--text3);font-size:13px;padding:12px 0">Nenhum registro detalhado disponível.</div>`;
+
+        document.getElementById('drawer-body').innerHTML = `
+    <div class="drawer-section">
+      <div class="drawer-section-title">Competências por domínio</div>
+      ${domRows}
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Últimas avaliações</div>
+      <div class="tl-mini">${histHTML}</div>
+    </div>`;
+        openDrawer();
+      }
+
+      // ── COMPETÊNCIAS ──────────────────────────────────
+      function renderCompetencias() {
+        const max = Math.max(...COMPETENCIAS_DATA.map((c) => c.av));
+        document.getElementById('comp-heat').innerHTML = COMPETENCIAS_DATA.map(
+          (c) => {
+            const pct = (c.av / max) * 100;
+            const isGap = c.av / c.max < 0.4;
+            return `<div class="ch-row">
+      <div class="ch-label">${c.nome}</div>
+      <div class="ch-bar-wrap" title="${c.av} registros">
+        <div class="ch-bar" style="width:${pct}%;background:${isGap ? 'rgba(255,107,107,.35)' : c.cor + '55'}"></div>
+        <div class="ch-bar-label" style="color:${isGap ? 'var(--accent3)' : 'rgba(255,255,255,.6)'}">${c.av}</div>
+      </div>
+      <div class="ch-count">${c.av}/${c.max}</div>
+      <div class="ch-alert" style="background:${isGap ? 'var(--accent3)' : 'transparent'}"></div>
+    </div>`;
+          },
+        ).join('');
+
+        drawCompRadar();
+
+        const gaps = COMPETENCIAS_DATA.filter((c) => c.av / c.max < 0.4);
+        document.getElementById('gaps-list').innerHTML = gaps
+          .map(
+            (g) => `
+    <div class="alert-strip" style="border-color:rgba(255,107,107,.2)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div><strong>${g.nome}</strong> — apenas <strong>${g.av}</strong> registros de ${g.max} esperados (${Math.round((g.av / g.max) * 100)}% de cobertura)</div>
+    </div>`,
+          )
+          .join('');
+      }
+
+      function drawCompRadar() {
+        const cv = document.getElementById('comp-radar'),
+          ctx = cv.getContext('2d');
+        const cx = 110,
+          cy = 100,
+          R = 80,
+          n = 6;
+        ctx.clearRect(0, 0, 220, 200);
+        for (let r = 1; r <= 5; r++) {
+          ctx.beginPath();
+          for (let i = 0; i < n; i++) {
+            const a = (Math.PI * 2 * i) / n - Math.PI / 2,
+              x = cx + R * (r / 5) * Math.cos(a),
+              y = cy + R * (r / 5) * Math.sin(a);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = `rgba(30,42,58,${r === 5 ? 0.9 : 0.4})`;
+          ctx.lineWidth = r === 5 ? 1 : 0.5;
+          ctx.stroke();
+        }
+        const compScores = [68, 47, 58, 76, 23, 13];
+        ctx.beginPath();
+        compScores.forEach((s, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2,
+            r = (R * s) / 100;
+          i === 0
+            ? ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a))
+            : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        });
+        ctx.closePath();
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        g.addColorStop(0, 'rgba(176,107,255,.2)');
+        g.addColorStop(1, 'rgba(176,107,255,.02)');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(176,107,255,.55)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.font = '500 9px Syne,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        DOMINIOS.forEach((d, i) => {
+          const a = (Math.PI * 2 * i) / n - Math.PI / 2,
+            lx = cx + (R + 14) * Math.cos(a),
+            ly = cy + (R + 14) * Math.sin(a);
+          ctx.fillStyle = DCORES[i];
+          ctx.fillText(d.split(' ')[0], lx, ly);
+        });
+      }
+
+      // ── PROFESSORES ───────────────────────────────────
+      let selectedProf = null;
+      function renderProfessores() {
+        document.getElementById('prof-grid').innerHTML = PROFESSORES.map(
+          (p) => `
+    <div class="prof-card-item${selectedProf === p.id ? ' selected' : ''}" onclick="selectProf(${p.id})">
+      <div class="pci-header">
+        <div class="pci-avatar" style="background:${p.cor}22;border-color:${p.cor}55;color:${p.cor}">${p.ini}</div>
+        <div>
+          <div class="pci-name">${p.nome}</div>
+          <div class="pci-disc">${p.disc}</div>
+        </div>
+      </div>
+      <div class="pci-stats">
+        <div class="pci-stat"><div class="pci-stat-val" style="color:${p.cor}">${p.av}</div><div class="pci-stat-label">registros</div></div>
+        <div class="pci-stat"><div class="pci-stat-val">${p.alunos}</div><div class="pci-stat-label">alunos</div></div>
+        <div class="pci-stat"><div class="pci-stat-val" style="color:${p.cor}">${p.tipos.length}</div><div class="pci-stat-label">modalidades</div></div>
+      </div>
+    </div>`,
+        ).join('');
+      }
+
+      function selectProf(id) {
+        selectedProf = selectedProf === id ? null : id;
+        renderProfessores();
+        const p = PROFESSORES.find((x) => x.id === id);
+        const card = document.getElementById('prof-detail-card');
+        if (!p || selectedProf === null) {
+          card.style.display = 'none';
+          return;
+        }
+        card.style.display = 'block';
+        document.getElementById('prof-detail-title').textContent =
+          p.nome + ' — Detalhes';
+        document.getElementById('prof-detail-body').innerHTML = `
+    <div class="g3" style="gap:10px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center">
+        <div style="font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;color:${p.cor}">${p.av}</div>
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px">Avaliações registradas</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center">
+        <div style="font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)">${p.alunos}</div>
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px">Alunos avaliados</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Modalidades</div>
+        ${p.tipos.map((t) => `<div style="font-size:12px;color:${p.cor};margin-bottom:4px">→ ${t}</div>`).join('')}
+      </div>
+    </div>`;
+      }
+
+      // ── DRAWER ────────────────────────────────────────
+      function openDrawer() {
+        document.getElementById('drawer-overlay').classList.add('open');
+      }
+      function closeDrawer() {
+        document.getElementById('drawer-overlay').classList.remove('open');
+      }
+      document
+        .getElementById('drawer-overlay')
+        .addEventListener('click', function (e) {
+          if (e.target === this) closeDrawer();
+        });
+
+      // ── UTILS ─────────────────────────────────────────
+      function iniciais(n) {
+        return n
+          .split(' ')
+          .slice(0, 2)
+          .map((x) => x[0])
+          .join('');
+      }
+
+      // ── INIT ──────────────────────────────────────────
+      renderCursoPills();
+      renderVisaoGeral();
+    </script>
+  </body>
+</html>
